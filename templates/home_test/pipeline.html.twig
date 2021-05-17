@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+
+<!--**********************************
+            Content body start
+        ***********************************-->
+<div class="content-body">
+
+            <div class="row page-titles mx-0">
+                <div class="col p-md-0">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">{{ data.name}}</a></li>
+                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Run Pipeline</a></li>
+                    </ol>
+                </div>
+            </div>
+            <!-- row -->
+
+           <div class="container-fluid">
+           <div class="col-md-12">
+            </div>
+            {#{form (pipelineForm)}#}
+            <!--- Pipelines *******************************************************************-->
+<div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Pipelines</h4>
+                   
+                                        {#{ form_start(form) }}
+                                            <div class="my-custom-class-for-errors">
+                                                {{ form_errors(form) }}
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col">
+                                                    {{ form_row(form.Branches) }}
+                                                </div>
+                                                <div class="col">
+                                                    {{ form_row(form.Run) }}
+                                                </div>
+                                            </div>
+                                        {{ form_end(form) }#}
+                                  
+            <form name="form" action="{{ path('DeployQA', { 'id': id ,'idTeam': team.id }) }}" method="POST" >   
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                                                                    
+                        <label>Branche Name</label>
+                        <select name="inputBranch" class="form-control">
+                                                                        
+                            {% for b in nameBranche %}
+                                <option value={{ b }} required>{{ b }}</option>
+
+                                    {% endfor %}
+                                    </select>
+
+                                        <label>Variables</label>
+                                        <select name="inputVariable" class="form-control">
+                                         <option selected="selected">Choose...</option>
+
+                                            {% for b in variables %}
+                                            <option value={{ b.key }} >{{ b.key }}</option>
+
+                                                {% endfor %}
+                                                    </select>
+                             </div>                                    
+                            </div>
+                                                <button type="submit">Run pipeline</button>
+
+                                            </form>
+
+                            </div>
+                        </div>
+
+
+<!-- end pipelines****************************************************************************-->
+            </div>
+
+
+
+
+       <!--**********************************
+            Content body end
+        ***********************************-->
+
+ 
+
+
+<!--******* na7i mochkelt form yaamel submit again after reload 
+Ifasakh l cache -->
+<script>
+    if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+    }
+</script>
+
+
+{% endblock %}

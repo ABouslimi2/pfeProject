@@ -1,0 +1,247 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+<script>
+var data = {{ locations | raw}}
+var dataTeams = {{ teams | json_encode() | raw }}
+			console.log('2'+JSON.stringify(data));
+			var map;
+      // Initialize and add the map
+      function initMap() {
+		   map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 36.862499, lng: 10.195556 },
+                zoom: 3.15
+            });
+			
+		 		var marker = [];
+                var contentString = [];
+                var infowindow = [];
+				
+				for (var i = 0; i < data.length; i++) {
+						
+                    marker[i] = new google.maps.Marker({
+                        position: { lat: data[i].lattitude, lng: data[i].longitude },
+                        map: map
+                    });
+					map.setOptions({draggable: false, zoomControl: false, scrollwheel: false, disableDoubleClickZoom: false});
+				 contentString[i] = '<div id="content">' +
+                        '<div id="siteNotice">' +
+                        '</div>' +
+                        '<h1 id="firstHeading" class="firstHeading">' + data[i].address + '</h1>' +
+                        '<div id="bodyContent">' +
+                        '<p><b>' + data[i].id + '</b>, also referred to as <b>Ayers Rock</b>, is a large ' +
+                        'sandstone rock formation in the southern part of the ' +
+                        'Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) ' +
+                        'south west of the nearest large town, Alice Springs; 450&#160;km ';
+                    infowindow[i] = new google.maps.InfoWindow({
+                        content: contentString[i]
+                    });
+                    var mdl = marker[i];
+                    google.maps.event.addListener(marker[i], 'mouseover', (function (mdl, i) {
+                        return function () {
+                            infowindow[i].open(map, marker[i]);
+                        }
+                    })(marker[i], i));
+
+                  
+					 google.maps.event.addListener(marker[i], 'mouseout', (function (mdl, i) {
+                        return function () {
+                            infowindow[i].close(map, marker[i]);
+                        }
+                    })(marker[i], i));
+
+				
+                
+				
+            }
+
+      }
+    </script>
+<!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body">
+
+            <div class="row page-titles mx-0">
+                <div class="col p-md-0">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
+                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Home</a></li>
+                    </ol>
+                </div>
+            </div>
+            <!-- row -->
+
+            <div class="container-fluid">
+					<div class="col-sm">
+
+						<button type="button" class="btn mb-1 btn-danger pull-right" data-toggle="modal" data-target="#basicModal">Add Team
+							<i class="fa fa-plus" aria-hidden="true"></i>
+						</button>
+					</div>
+						<!-- Modal -->
+
+				<div class="modal fade" id="basicModal" style="display: none;" aria-hidden="true">
+					<div class="modal-dialog" role="document">
+						<form id="formAdd" name="formAdd" action="{{ path('add_team') }}" method="POST">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title">Add Team</h5>
+									<button type="button" class="close" data-dismiss="modal">
+										<span>×</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<div class="card-body">
+										<div class="basic-form">
+
+											<div class="form-group row">
+												<label class="col-sm-2 col-form-label">Team Name</label>
+												<div class="col-sm-10">
+													<input type="text" class="form-control"  placeholder="Enter your team name"  name="team" id="myName">
+												</div>
+					<div id="requiredTeam" style="display: none;"><p style="color:red;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					Field team name is required !</b></p></div>
+					<div id="TeamNameExist" style="display: none;"><p style="color:red;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					Team name already exists !</b></p></div>
+											</div>
+											<div class="form-group row">
+												<label class="col-sm-2 col-form-label">GitLab Server URL</label>
+												<div class="col-sm-10">
+					<input type="text" class="form-control" placeholder="Enter your gitlab server URL"  name="gitlabURL" id="myUrl">
+												</div>
+												<div id="requiredUrl" style="display: none;"><p style="color:red;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												Server URL is required !</b></p></div>
+											</div>
+											<div class="form-group row">
+												<label class="col-sm-2 col-form-label">GitLab Token</label>
+												<div class="col-sm-10">
+					<input type="text" class="form-control"  placeholder="Enter your gitlab token"  name="token" minlength="20" maxlength="20" id="myToken">
+												</div>
+												
+												<div id="requiredToken" style="display: none;"><p style="color:red;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												Token is required !</b></p></div>
+												<div id="requiredTokenLength" style="display: none;"><p style="color:red;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												This field must be of length 20  !</b></p></div>
+
+											</div>
+													<div class="form-group row">
+												<label class="col-sm-2 col-form-label">GitLab Token</label>
+												<div class="col-sm-10">
+												
+                                        <select name="gitType" class="form-control">
+                                            <option selected="selected" value="Gitlab" >Gitlab</option>
+                                              <option value="Github" >Github</option>
+                                            
+                                                    </select>
+												</div>
+
+											<div class="form-group row">
+												<div class="col-sm-10 ">
+													<button type="button" data-href="{{ path('addTeamDash') }}" class="btn btn-danger addBtn">Save
+													</button>
+												</div>
+											</div>
+										</div>
+									</div>
+
+								</div>
+
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+            </div></br></br></br>
+			<div class="addItemTeam">
+			
+			<div id="map" style="width: 1250px; height:600px"></div>
+			
+			</div>
+            <!-- #/ container -->
+        </div>
+ <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBnzV3UH6ciiKF-_2ooRflGR2ZEl8W0aGY
+     &callback=initMap&libraries=&v=weekly" async defer></script>
+	 <script>
+        const appendChild = Element.prototype.appendChild;
+        const urlCatchers = [
+        "/AuthenticationService.Authenticate?",
+        "/QuotaService.RecordEvent?"
+        ];
+        Element.prototype.appendChild = function (element) {
+        const isGMapScript = element.tagName === 'SCRIPT' && /maps\.googleapis\.com/i.test(element.src);
+        const isGMapAccessScript = isGMapScript && urlCatchers.some(url => element.src.includes(url));
+
+        if (!isGMapAccessScript) {
+        return appendChild.call(this, element);
+        }
+        return element;
+        };
+</script>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+
+<script type="text/javascript">
+        
+
+$(document).ready(function () {
+	$('.addBtn').on('click', function() {
+		
+		var myName = document.getElementById("myName").value;
+		var myUrl = document.getElementById("myUrl").value;
+		var myToken = document.getElementById("myToken").value;
+		var data = $('#formAdd').serialize();
+		var url = $(this).data('href');
+		console.log('1 '+data+' ++++++++++++2 '+url);
+		var aaa = {{ names | raw}}
+		const b = aaa.map(name => name.toUpperCase());
+
+			if ( b.includes(myName.toUpperCase()))
+				{ 
+					$('#TeamNameExist').show(); 
+					$('#TeamNameExist').delay(3000).hide(1);
+				} 
+	
+		 else if (myName == ""){
+		  $('#requiredTeam').show();
+		   $('#requiredTeam').delay(3000).hide(1);
+  		}
+		  else if (myUrl == ""){
+			  $('#requiredUrl').show();
+			  $('#requiredUrl').delay(3000).hide(1);
+		  }
+		   else if (myToken == ""){
+			  $('#requiredToken').show();
+			  $('#requiredToken').delay(3000).hide(1);
+		  }
+		  else if(myToken.length != 20) {
+			   $('#requiredTokenLength').show();
+			   $('#requiredTokenLength').delay(3000).hide(1);
+		  }
+		else {
+		
+		$.ajax({
+			type: 'post',
+			url: url,
+			data: data,
+				success: function (data, response) {
+					console.log('12345');
+					console.log('a'+data);
+					console.log('b'+response);
+					console.log('c'+data.teams);
+				//$(".addItemTeam").load(location.href + " .addItemTeam");
+			    //$(".addItemTeam").load(" .addItemTeam");
+				$('#basicModal').modal('toggle');
+				$('.modal-backdrop.fade.show').hide();
+				}
+		});
+		}
+	});
+});
+</script>	
+
+{% endblock %}
+
+ 

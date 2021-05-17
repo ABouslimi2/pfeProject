@@ -1,0 +1,32 @@
+security:
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    providers:
+        my_ldap:
+            ldap:
+                service: Symfony\Component\Ldap\Ldap
+                base_dn: 'DC=ad,DC=linedata,DC=com'
+                search_dn: 'CN=SA_KenLDAP,OU=Service Accounts,OU=Global,DC=ad,DC=linedata,DC=com'
+                search_password: 'LDS@ken01'
+                default_roles: ROLE_USER
+                uid_key: sAMAccountName
+    
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: true
+            form_login_ldap:
+            #http_basic_ldap:
+                login_path: login
+                check_path: login
+                service: Symfony\Component\Ldap\Ldap
+                dn_string: 'sAMAccountName={username},dc=ad,dc=linedata,dc=com'
+                default_target_path: dashboard
+                
+    access_control:
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        #- { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login, roles: ROLE_USER }        
+
+ 

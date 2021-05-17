@@ -1,0 +1,342 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<style>
+		.button {
+			padding: 7px;
+		}
+	</style>
+	<!--**********************************
+				            Content body start
+				        ***********************************-->
+	<div class="content-body">
+		<div class="row page-titles mx-0">
+			<div class="col p-md-0">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item">
+						<a href="javascript:void(0)">GitLab</a>
+					</li>
+					<li class="breadcrumb-item active">
+						<a href="javascript:void(0)">Teams</a>
+					</li>
+				</ol>
+			</div>
+		</div>
+		<!-- row -->
+
+		<div class="container-fluid">
+			<div
+				class="bootstrap-modal">
+				<!-- Button trigger modal -->
+				<div class="row">
+					<div class="col-sm">
+
+						
+						<img src="{{asset('assets/images/gitlab-logo.png') }}" width="100" height="60" />
+						
+					</div>
+					<div class="col-sm">
+
+						<button type="button" class="btn mb-1 btn-danger pull-right" data-toggle="modal" data-target="#basicModal">Add Team
+							<i class="fa fa-plus" aria-hidden="true"></i>
+						</button>
+					</div>
+				</div>
+				<!-- Modal -->
+
+				<div class="modal fade" id="basicModal" style="display: none;" aria-hidden="true">
+					<div class="modal-dialog" role="document">
+						<form id="formAdd" name="formAdd" action="{{ path('add_team') }}" method="POST">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title">Add Team</h5>
+									<button type="button" class="close" data-dismiss="modal">
+										<span>×</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<div class="card-body">
+										<div class="basic-form">
+
+											<div class="form-group row">
+												<label class="col-sm-2 col-form-label">Team Name</label>
+												<div class="col-sm-10">
+													<input type="text" class="form-control"  placeholder="Enter your team name"  name="team" id="myName">
+												</div>
+					<div id="requiredTeam" style="display: none;"><p style="color:red;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					Field team name is required !</b></p></div>
+					<div id="TeamNameExist" style="display: none;"><p style="color:red;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					Team name already exists !</b></p></div>
+											</div>
+											<div class="form-group row">
+												<label class="col-sm-2 col-form-label">GitLab Server URL</label>
+												<div class="col-sm-10">
+					<input type="text" class="form-control" placeholder="Enter your gitlab server URL"  name="gitlabURL" id="myUrl">
+												</div>
+												<div id="requiredUrl" style="display: none;"><p style="color:red;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												Server URL is required !</b></p></div>
+											</div>
+											<div class="form-group row">
+												<label class="col-sm-2 col-form-label">GitLab Token</label>
+												<div class="col-sm-10">
+					<input type="text" class="form-control"  placeholder="Enter your gitlab token"  name="token" minlength="20" maxlength="20" id="myToken">
+												</div>
+												
+												<div id="requiredToken" style="display: none;"><p style="color:red;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												Token is required !</b></p></div>
+												<div id="requiredTokenLength" style="display: none;"><p style="color:red;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												This field must be of length 20  !</b></p></div>
+
+											</div>
+													<div class="form-group row">
+												<label class="col-sm-2 col-form-label">GitLab Token</label>
+												<div class="col-sm-10">
+												
+                                        <select name="gitType" class="form-control">
+                                            <option selected="selected" value="Gitlab" >Gitlab</option>
+                                              <option value="Github" >Github</option>
+                                            
+                                                    </select>
+												</div>
+
+											<div class="form-group row">
+												<div class="col-sm-10 ">
+													<button type="button" data-href="{{ path('add_team') }}" class="btn btn-danger addBtn">Save
+													</button>
+												</div>
+											</div>
+										</div>
+									</div>
+
+								</div>
+
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="addItemTeam">
+			<div class="row">
+				{% for t in teams %}
+					<div class="col-md-6 col-lg-3 gtilab-team-bloc">
+						<div class="card ">
+							<div class="row">
+								<div class="col-sm">
+									<div class="card-header">Gitlab Team</div>
+								</div>
+								<!-- **************** edit*******************************************-->
+								<div class="bootstrap-modal">
+									<!-- Button trigger modal -->
+									<div class="col-sm">
+
+
+										<a href="{{ path('edit_team', { 'idTeam': t.id }) }}" class="button" data-placement="top" title="" data-original-title="Edit" data-toggle="modal" data-target="#modalEdit{{t.id}}">
+											<i class="fa fa-pencil color-muted m-r-5"></i>
+										</a>
+
+
+										<a href="{{ path('delete_team', { 'idTeam': t.id }) }}" data-toggle="modal" data-target="#basicModalDelete{{t.id}}" class="button" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete">
+											<i class="fa fa-trash color-muted m-r-5"></i>
+										</a>
+
+									</div>
+									<div class="bootstrap-modal">
+										<!-- Button trigger modal -->
+										<!-- Modal -->
+											<div class="modal fade modal-delete-team" id="basicModalDelete{{t.id}}" style="display: none;" aria-hidden="true"> <div class="modal-dialog" role="document" id="{{t.id}}">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h5 class="modal-title">Delete Team</h5>
+														<button type="button" class="close closee" data-dismiss="modal">
+															<span>×</span>
+														</button>
+													</div>
+													<div class="modal-body">Are you sure you want to delete this GitLab Team?
+													</div>
+													<div class="modal-footer">
+														<button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+														<button type="button" data-href="{{ path('delete_team', { 'idTeam': t.id }) }}" class="btn btn-danger deleteBtn">Yes</button>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- Modal -->
+									<div class="modal fade modal-edit-team" id="modalEdit{{t.id}}" style="display: none;" aria-hidden="true">
+										<div class="modal-dialog" role="document" id="{{t.id}}">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h5 class="modal-title">Edit Team</h5>
+														<button type="button" class="close" data-dismiss="modal">
+															<span>×</span>
+														</button>
+													</div>
+													<div class="modal-body">
+											<form  id="formEdit{{t.id}}" class="formEdit"  action="{{ path('edit_team', { 'idTeam': t.id }) }}" method="POST">
+
+														<div class="card-body">
+															<div class="basic-form">
+																<div class="form-group row">
+																	<label class="col-sm-2 col-form-label">Team Name</label>
+																	<div class="col-sm-10">
+																		<input type="text" class="form-control" placeholder="Enter your team name"  name="teamEdit" value="{{t.team}}" id="myNameEdit{{t.id}}">
+																	</div>
+														
+																</div>
+																<div class="form-group row">
+																	<label class="col-sm-2 col-form-label">GitLab Server URL</label>
+																	<div class="col-sm-10">
+																		<input type="text" class="form-control" placeholder="Enter your gitlab server URL"  name="gitlabURLEdit" value="{{t.gitlabURL}}" id="myUrlEdit{{t.id}}">
+																	
+																	</div>
+																</div>
+																<div class="form-group row">
+																	<label class="col-sm-2 col-form-label">GitLab Token</label>
+																	<div class="col-sm-10">
+																		<input type="text" class="form-control" placeholder="Enter your gitlab token"  name="tokenEdit" minlength="20" maxlength="20" value="{{t.token}}" id="myTokenEdit{{t.id}}">
+																		
+																	</div>
+																</div>
+
+
+																<div class="form-group row">
+																	<div class="col-sm-10 ">
+																		<button type="button" data-id="{{t.id}}" data-href="{{ path('edit_team', { 'idTeam': t.id }) }}" class="btn btn-danger editBtn">Save
+																		</button>
+																	</div>
+																</div>
+															</div>
+														</div>
+
+													</div>
+
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+
+								<!-- end edit*******************************************-->
+
+							</div>
+							<div class="card-body">
+
+								<h5 class="card-title">
+									{{ t.team }}</h5>
+
+								<a href="{{ path('dashboard', { 'idTeam': t.id }) }}" class="btn mb-1 btn-danger">Projects
+								</a>
+
+							</div>
+						</div>
+					</div>
+
+				{% endfor %}
+				<!-- #/ container -->
+			</div></div>
+		</div>
+		<!--**********************************
+									            Content body end
+									        ***********************************-->
+	</div>
+
+<script type="text/javascript">
+        
+
+$(document).ready(function () {
+	$('.addBtn').on('click', function() {
+		
+		var myName = document.getElementById("myName").value;
+		var myUrl = document.getElementById("myUrl").value;
+		var myToken = document.getElementById("myToken").value;
+		var data = $('#formAdd').serialize();
+		var url = $(this).data('href');
+		
+		var aaa = {{ names | raw}}
+		const b = aaa.map(name => name.toUpperCase());
+
+			if ( b.includes(myName.toUpperCase()))
+				{ 
+					$('#TeamNameExist').show(); 
+					$('#TeamNameExist').delay(3000).hide(1);
+				} 
+	
+		 else if (myName == ""){
+		  $('#requiredTeam').show();
+		   $('#requiredTeam').delay(3000).hide(1);
+  		}
+		  else if (myUrl == ""){
+			  $('#requiredUrl').show();
+			  $('#requiredUrl').delay(3000).hide(1);
+		  }
+		   else if (myToken == ""){
+			  $('#requiredToken').show();
+			  $('#requiredToken').delay(3000).hide(1);
+		  }
+		  else if(myToken.length != 20) {
+			   $('#requiredTokenLength').show();
+			   $('#requiredTokenLength').delay(3000).hide(1);
+		  }
+		else {
+		
+		$.ajax({
+			type: 'post',
+			url: url,
+			data: data,
+				success: function (data, response) {
+					console.log(data.teams);
+				//$(".addItemTeam").load(location.href + " .addItemTeam");
+			    $(".addItemTeam").load(" .addItemTeam");
+				$('#basicModal').modal('toggle');
+				$('.modal-backdrop.fade.show').hide();
+				}
+		});
+		}
+	});
+
+	$(document).on('click', '.deleteBtn', function() {
+		var $this = $(this);
+		var url = $(this).data('href');
+		$.ajax({
+			url: url,
+			data: {},
+			method: 'post',
+				success: function (data, reponse) {
+				$this.closest('.gtilab-team-bloc').find('.modal-delete-team').modal('hide');
+				$('.modal-backdrop.fade.show').hide();
+				//$this.closest('.gtilab-team-bloc').remove();
+				$(".addItemTeam").load(" .addItemTeam");
+				}	
+		});
+	});
+
+	$(document).on('click', '.editBtn', function() {
+		var $this = $(this);
+		var url = $(this).data('href');
+		var id = $(this).data('id');
+		var data = $('#formEdit'+id).serialize();
+		console.log(data);
+		var myName = document.getElementById("myNameEdit"+id).value;
+		var myUrl = document.getElementById("myUrlEdit"+id).value;
+		var myToken = document.getElementById("myTokenEdit"+id).value;
+		
+		$.ajax({
+			url: url,
+			data: data,
+			method: 'post',
+				success: function (data, reponse) {
+				$this.closest('.gtilab-team-bloc').find('.modal-edit-team').modal('hide');
+				$('.modal-backdrop.fade.show').hide();
+				//$this.closest('.gtilab-team-bloc').remove();
+				$(".addItemTeam").load(" .addItemTeam");
+				}	
+		});
+		
+	});
+});
+</script>
+
+
+
+{% endblock %}
+

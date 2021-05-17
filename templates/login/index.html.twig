@@ -1,0 +1,79 @@
+
+
+<head>
+   
+    <title>Login</title>
+   
+
+    {% block stylesheets %}
+            
+        <link rel="icon" type="image/png" sizes="16x16" href="{{asset('assets/images/ld.png') }}">
+        <!-- Custom Stylesheet -->
+        <link href=" {{asset('assets/css/style.css') }} " rel="stylesheet">
+
+        {% endblock %}
+
+        {% block javascripts %}
+    <script src=" {{ asset('assets/plugins/common/common.min.js')}}"></script>
+    <script src=" {{ asset('assets/js/custom.min.js')}}"></script>
+    <script src="{{ asset('assets/js/settings.js ')}}"></script>
+    <script src=" {{ asset('assets/js/gleek.js')}}"></script>
+    <script src="{{ asset('assets/js/styleSwitcher.js')}}"></script>
+
+        {% endblock %}
+    
+</head>
+<style>
+body {
+
+  background-image: url("{{asset('assets/images/bg.png') }}");
+
+  background-repeat: no-repeat;
+
+    background-attachment: fixed;
+
+  background-size: cover;
+
+  color: #FFFFFF;
+
+  }
+</style>
+{% block body %}
+    {% if error %}
+        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        
+    {% endif %} 
+   <div class="login-form-bg h-100">
+        <div class="container h-100">
+            <div class="row justify-content-center h-100">
+                <div class="col-xl-6">
+                    <div class="form-input-content">
+                        <div class="card login-form mb-0">
+                            <div class="card-body pt-5">
+                                <a class="text-center" href="index.html"> <h4></h4></a>
+        
+                                <form class="mt-5 mb-5 login-input" action="{{ path('login') }}" method="post">
+                                    <div class="form-group">
+                                        <input type="text" id="username" name="_username" class="form-control" placeholder="Username" />
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="password" class="form-control" id="password" name="_password" placeholder="Password">
+                                    </div>
+                                     {#
+            If you want to control the URL the user
+            is redirected to on success (more details below)
+            <input type="hidden" name="_target_path" value="/admin/dashboard" />#}
+
+            
+        
+                                    <button style="background-color:#E40134" class="btn login-form__btn submit w-100" type="submit">Sign In</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}

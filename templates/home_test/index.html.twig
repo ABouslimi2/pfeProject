@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HomeTestController!{% endblock %}
+
+{% block body %}
+<!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body">
+
+            <div class="row page-titles mx-0">
+                <div class="col p-md-0">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
+                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Home</a></li>
+                    </ol>
+                </div>
+            </div>
+            <!-- row -->
+
+            <div class="container-fluid">
+           
+
+            <div class="card-body">
+                                <h4 class="card-title">GitLab Projects Amina Test</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered verticle-middle">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">ID</th>
+                                                <th scope="col">Created at</th>
+                                                <th scope="col">Last Activity</th>
+                                                <th scope="col">Frequency</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                         
+                                            <tr>
+                                                <td>{{ data.name }}</td>
+                                                <td>
+                                                   {{ data.id }}
+                                                </td>
+                                                <td>{{data.created_at | date('d/m/Y')}}</td>
+                                                <td>
+                                                {{ data.last_activity_at| date('d/m/Y')}}
+                                                </td>
+                                                <td>
+                                                    <div class="progress" style="height: 10px">
+                                                        <div class="progress-bar gradient-2" style="width: 70%;" role="progressbar"><span class="sr-only">70% Complete</span>
+                                                        </div>
+                                                    </div> 
+                                                </td>
+                                                
+                                                <td>
+                                               
+                                                <a href="{{ path('Testdetails', { 'id': data.id }) }}" class="btn mb-1 btn-danger">More details </a>
+                                                
+                                                </td>
+                                            </tr>
+
+                                            
+                                            
+                                           
+                                           
+                                            
+                                           
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+            </div>
+            <!-- #/ container -->
+        </div>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+
+
+{% endblock %}

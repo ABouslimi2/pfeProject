@@ -1,0 +1,227 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<style>
+		.button5 {
+			border-radius: 50%;
+			background-color: #4CAF50;
+		}
+		.button4 {
+			border-radius: 50%;
+			background-color: blue;
+		}
+		.button3 {
+			border-radius: 50%;
+			background-color: red;
+		}
+
+		.button {
+
+			border: none;
+			color: white;
+			padding: 3px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+			margin: 4px 2px;
+		}
+		.buttonn {
+
+			border: none;
+			color: white;
+			padding: 4px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+			margin: 4px 2px;
+		}
+	</style>
+<!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body">
+
+            <div class="row page-titles mx-0">
+                <div class="col p-md-0">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">{{ data.name}}</a></li>
+                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Pipelines</a></li>
+                    </ol>
+                </div>
+            </div>
+            <!-- row -->
+
+           <div class="container-fluid">
+            <div class="col-md-12">
+             <!--- Pipelines *******************************************************************-->
+		<div class="card">
+			<div class="card-body">
+				<h4 class="card-title">Pipelines</h4>
+				<!-- Nav tabs -->
+				<div class="custom-tab-1">
+					<ul class="nav nav-tabs mb-3">
+						<li class="nav-item">
+							<a class="nav-link active show" data-toggle="tab" href="#pipe">Pipelines List</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" data-toggle="tab" href="#action">Actions
+							</a>
+						</li>
+
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane fade active show" id="pipe" role="tabpanel">
+							<div class="p-t-15">
+								<div class="card-body">
+
+									<h4 class="card-title">Pipelines Table</h4>
+									<div class="table-responsive">
+										<table class="table header-border" width="2000">
+											<thead>
+												<tr>
+													<th scope="col">Status</th>
+													<th scope="col">Pipeline</th>
+													<th scope="col">Refrence</th>
+													<th scope="col">Created At</th>
+													<th scope="col">Updated At</th>
+
+													<th scope="col">Jobs</th>
+													<th scope="col">Action</th>
+												</tr>
+											</thead>
+											<tbody>
+												{% for p in pipess %}
+													<tr>
+														<td>
+															{% if  p.status == "success" %}
+																<button style="height:35px;width:100px" type="button" class="btn mb-1 btn-rounded btn-outline-success">
+																	<i class="fa fa-check"></i>
+																	Passed
+																</button>
+															{% elseif  p.status == "failed" %}
+																<button style="height:35px;width:100px" type="button" class="btn mb-1 btn-rounded btn-outline-danger">
+																	<i class="fa fa-close"></i>
+																	Failed
+																</button>
+															{% elseif  p.status == "canceled" %}
+																<button style="height:35px;width:100px" type="button" class="btn mb-1 btn-rounded btn-outline-warning">
+																	<i class="fa fa-ban"></i>
+																	Canceled</button>
+															{% elseif  p.status == "running" %}
+																<button style="height:35px;width:100px" type="button" class="btn mb-1 btn-rounded btn-outline-info">
+																	<i class="fa fa-spinner"></i>
+																	Running</button>
+															{% elseif  p.status == "pending" %}
+																<button style="height:35px;width:100px" type="button" class="btn mb-1 btn-rounded btn-outline-info">
+																	<i class="fa fa-pause-circle-o"></i>
+																	Pending</button>
+															{% else %}
+																<button style="height:35px;width:100px" type="button" class="btn mb-1 btn-rounded btn-outline-info">
+																	<i class="fa fa-pause-circle-o"></i>
+																	Blocked</button>
+															{% endif %}
+														</td>
+														<td>
+															<a href="">
+																#{{ p.id }}
+															</a>
+														</td>
+														<td>
+															<img src="{{asset('assets/images/branche.png') }}"/>
+															{{ p.ref }}
+														</td>
+														<td style="width: 15%; text-align: right;">
+															<i class="mdi mdi-calendar-check"></i>
+															{{ p.created_at | date('d/m/Y') }}
+															<br/>
+															<i class="fa fa-clock-o"></i>
+															{{ p.created_at | date('g:i a') }}
+														</td>
+														<td style="width: 15%; text-align: right;">
+															<i class="mdi mdi-calendar-check"></i>
+															{{ p.updated_at | date('d/m/Y') }}
+															<br/>
+															<i class="fa fa-clock-o"></i>
+															{{ p.updated_at | date('g:i a') }}
+														</td>
+
+
+														<td>
+															<div  class="btn-group" role="group" aria-label="Basic example">
+  															<div class="btn-group" role="group">
+															<div class="dropdown">
+															<button class="btn dropdown-toggle" style="background-color: white;border-color:red;text-color:black;" type="button" id="dropdownMenuButton" data-toggle="dropdown" data-placement="top" title="" data-original-title="Run manuel or delayed jobs " aria-haspopup="true" aria-expanded="false">
+		 															<i class="fa fa-play" aria-hidden="true"></i>
+																</button>
+															<div style="width:auto;height:auto;" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+															
+															
+															{% for job in jobs | sort((a, b) => a.created_at <=> b.created_at) %}
+																{% if job.pipeline.id == p.id %}
+																<div class="row" style="margin-left: 2px">
+													            <div class="col-sm-8" >
+
+																	<p style="color:black;">{{job.name}} <p>
+																</div>
+																<div class="col-sm-4 pull-right">
+																
+																
+
+																<a href="{{ path('retry_job', { 'id': data.id, 'idTeam': team.id  ,'idjob' : job.id }) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="Retry" style="background-color: white;border-color:red;text-color:black;" type="button" class="btn"><i class="fa fa-repeat" aria-hidden="true"></i></a>
+																
+																</div></div>
+
+																{% endif %}
+															{% endfor %}
+															
+														</td>
+														 <td>
+ 
+															{%  if (p.status == "failed") or (p.status == "canceled") or (p.status == "skipped") %}
+															
+															<a href="{{ path('retry_pipelines', { 'id': data.id, 'idTeam': team.id  ,'idpipe' : p.id }) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="Retry" style="background-color: white;border-color:red;text-color:black;" type="button" class="btn"><i class="fa fa-repeat" aria-hidden="true"></i></a>
+															{% elseif (p.status == "running") %}
+															<a href="{{ path('cancel_pipeline', { 'id': data.id, 'idTeam': team.id  ,'idpipe' : p.id }) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="Cancel" style="background-color: white;border-color:red;text-color:black;" type="button" class="btn"><i class="fa fa-ban" aria-hidden="true"></i></a>
+
+															{% endif %}
+                                            </td>
+													</tr>
+												{% endfor %}
+											</tbody>
+										</td>
+									</tr>
+								</tbody>
+							</tbody>
+						</table>
+						{#{ knp_pagination_render(pipelines) }#}
+						<div class="d-flex justify-content-center">
+							{{ knp_pagination_render(pipess, 'pagination.html.twig') }}
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+
+		<div class="tab-pane fade" id="action">
+			<div class="p-t-15">
+				<a href="{{ path('DeployQA', { 'id': data.id ,'idTeam': team.id }) }}" class="btn mb-1 btn-danger">Deploy QA
+					<i class="fa fa-play" aria-hidden="true"></i>
+				</a>
+			</div>
+		</div>
+
+
+	</div>
+</div></div></div>
+
+
+<!-- end pipelines****************************************************************************-->
+            </div>
+           </div>
+        </div>
+		
+{% endblock %}

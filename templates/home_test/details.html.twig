@@ -1,0 +1,667 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+	<!--**********************************
+			            Content body start
+			        ***********************************-->
+	<div class="content-body">
+
+		<div class="row page-titles mx-0">
+			<div class="col p-md-0">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item">
+						<a href="javascript:void(0)">{{ data.name}}</a>
+					</li>
+					<li class="breadcrumb-item active">
+						<a href="javascript:void(0)">Details</a>
+					</li>
+				</ol>
+			</div>
+		</div>
+		<!-- row -->
+
+		<div class="container-fluid">
+			<div class="col-md-12">
+				<div class="card">
+					<div class="card-body">
+					<div class="row">
+                                <h4 class="card-title">Project overview</h4>
+                                <a href="{{ path('showTestpipelines', { 'id': data.id }) }}" class="btn mb-1 btn-danger" class="align-right">
+                                Run Pipelines
+					            <i class="fa fa-play" aria-hidden="true"></i>
+				                </a>
+                            </div>
+						<!-- Nav tabs -->
+						<div class="custom-tab-1">
+							<ul class="nav nav-tabs mb-3">
+								<li class="nav-item">
+									<a class="nav-link active show" data-toggle="tab" href="#message1">Statistics</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" data-toggle="tab" href="#home1">
+										<span style="margin-right:5px">
+											<i class="ti-user"></i>
+										</span>
+										{{number}}
+										Members</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" data-toggle="tab" href="#profile1">{{brancheNB}}
+										Branches</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" data-toggle="tab" href="#contact1">{{commitNb}}
+										Commits</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" data-toggle="tab" href="#merge">{{mergeReqNb}}
+										Merge requests</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" data-toggle="tab" href="#issue">{{issuesNB}}
+										Issues</a>
+								</li>
+
+								<li class="nav-item">
+									<a class="nav-link" data-toggle="tab" href="#contact1">{{tagNb}}
+										Tags</a>
+								</li>
+							</li>
+
+						</ul>
+						<div class="tab-content">
+							<div class="tab-pane fade" id="home1" role="tabpanel">
+								<div class="p-t-15">
+									<div class="row">
+										{% for m in members %}
+											<div class="col-4">
+												<div class="card" style="margin-left:15px">
+													<div class="card-body">
+														<div class="text-center">
+															<img alt="" class="rounded-circle mt-4" src="{{m.avatar_url}}" width="70" height="70">
+															<h4>{{ m.username}}</h4>
+															<p class="text-muted">{{m.name}}</p>
+														</div>
+													</div>
+
+												</div>
+											</div>
+
+										{% endfor %}
+									</div>
+								</div>
+							</div>
+							<div class="tab-pane fade" id="profile1">
+								<div class="p-t-15">
+									<div class="col-lg-12">
+										<div class="card">
+											<div class="card-body">
+												{% for b in branches %}
+													<table>
+														<tr>
+															<td>
+																<h4 class="card-title">{{b.name}}</h4>
+															</td>
+															{% if b.merged == false %}
+																<td>
+																	<span class="badge badge-danger px-2">
+																		Merged</span>
+																</td>
+															{% endif %}
+														</tr>
+													</table>
+
+													<h6>Commited at:
+														{{b.commit.created_at | date('d/m/Y')}}
+													</h6>
+
+													<div class="custom-media-object-2">
+														<div
+															class="media border-bottom-1 p-t-15">
+															<!-- <img class="mr-3 rounded-circle" src="{{asset('assets/images/user/1.png') }}" alt=""> -->
+															<div class="media-body">
+																<div class="row">
+																	<div class="col-lg-5">
+																		<h5>{{b.commit.author_name}}</h5>
+																		<p>{{b.commit.author_email}}</p>
+																	</div>
+																	<div class="col-lg-5">
+																		<h5>{{b.commit.title}}</h5>
+																		<p class="text-muted f-s-14">{{b.commit.message}}</p>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												{% endfor %}
+											</div>
+
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- Table commit-->
+							<div class="tab-pane fade" id="contact1">
+								<div class="p-t-15">
+
+									<div class="card">
+										<div class="card-body">
+											<h4 class="card-title">Commits Table</h4>
+											<div class="table-responsive">
+												<table id="myTable" class="table header-border">
+													<thead>
+														<tr>
+															<th scope="col">Committer Name</th>
+															<th scope="col">Committer Email</th>
+															<th scope="col">Committed Date</th>
+															<th scope="col">Title</th>
+															<th scope="col">Message</th>
+														</tr>
+													</thead>
+													<tbody>
+														{% for c in commits | sort((a, b) => a.committer_name <=> b.committer_name) %}
+															<tr>
+																<td>{{ c.committer_name}}</td>
+																<td>{{ c.committer_email}}</td>
+																<td>{{ c.committed_date | date('d/m/Y') }}</td>
+																<td>{{ c.title}}</td>
+																<td>{{ c.message}}</td>
+															</tr>
+														{% endfor %}
+													</tbody>
+												</table>
+												<div class="d-flex justify-content-center">
+													{{ knp_pagination_render(commits, 'pagination.html.twig') }}
+												</div>
+											</div>
+											{#{ knp_pagination_render(commits) }#}
+										</div>
+
+									</div>
+								</div>
+							</div>
+
+
+							<div class="tab-pane fade" id="merge">
+								<div class="p-t-15">
+									<div class="card">
+										<div class="card-body">
+											<h4 class="card-title">Merge Requests Table</h4>
+											<div class="table-responsive">
+												<table class="table header-border">
+													<thead>
+														<tr>
+															<th scope="col">Title</th>
+															<th scope="col">Description</th>
+															<th scope="col">Created at</th>
+															<th scope="col">Source branch</th>
+															<th scope="col">Target Branch</th>
+															<th scope="col">State</th>
+															<th scope="col">Merged By</th>
+															<th scope="col">Closed By</th>
+															<th scope="col">Conflicts</th>
+															<th scope="col">Assignees</th>
+														</tr>
+													</thead>
+													<tbody>
+														{% for merge in merges %}
+															<tr>
+																<td>{{merge.title}}</td>
+																<td>{{ merge.description}}</td>
+																<td>{{ merge.created_at | date('d/m/Y') }}</td>
+																<td>{{merge.source_branch}}</td>
+																<td>{{ merge.target_branch}}</td>
+
+																<td>
+																	{% if merge.state == "merged"%}
+																		<span class="badge badge-success px-2">Merged</span>
+																		<span>{{merge.merged_at | date('d/m/Y') }}</span>
+																	{% elseif merge.state == "closed" %}
+																		<span class="badge badge-info">Closed</span>
+																		<span>{{merge.closed_at | date('d/m/Y') }}</span>
+																	{% endif %}
+																</td>
+
+																<td>
+																	{% if merge.state == "merged"%}
+																		<span><img alt="" class="rounded-circle mt-4" src="{{merge.merged_by.avatar_url}}" width="30" height="30"></span>
+																		{{merge.merged_by.username}}
+																	{% endif %}
+																</td>
+																<td>
+																	{% if merge.state == "closed"%}
+																		<span><img alt="" class="rounded-circle mt-4" src="{{merge.closed_by.avatar_url}}" width="30" height="30"></span>
+																		{{merge.closed_by.username}}
+																	{% endif %}
+																</td>
+																<td>
+																	{% if merge.has_conflicts == false %}
+																		<span class="badge badge-success px-2">No conflicts</span>
+																	{% elseif merge.has_conflicts == true %}
+																		<span class="badge badge-danger">With conflicts</span>
+																	{% endif %}
+																</td>
+																<td>
+																	<div class="outline-button">
+																		<button class="btn mb-1 btn-outline-danger" data-toggle="modal" data-target="#agregarPunto">
+																			Assignees
+
+																		</button>
+																	</div>
+																	<div style="display: none;" class="modal fade" id="agregarPunto" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+																		<div class="modal-dialog">
+																			<div class="modal-content">
+																				<div class="modal-header">
+																					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+																					<h4 class="modal-title" id="myModalLabel"></h4>
+																				</div>
+
+
+																				<div class="modal-body">
+
+																					{% for i in merge.assignees %}
+
+																						<div class="card">
+																							<div class="card-body">
+																								<h4 class="card-title">Assignees:
+																								</h4>
+																								<div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 390px;">
+																									<div id="activity" style="overflow: hidden; width: auto; height: 390px;">
+																										<div class="media border-bottom-1 pt-3 pb-3">
+																											<img width="35" src="{{i.avatar_url}}" class="mr-3 rounded-circle">
+																											<div class="media-body">
+																												<h5>{{ i.username }}</h5>
+																												<p class="mb-0">{{i.name}}</p>
+																											</div>
+																											{% if i.state == "active"%}
+																												<span class="badge badge-success px-2">Active</span>
+
+																											{% endif %}
+																										</div>
+																									</div>
+																									<div class="slimScrollBar" style="background: transparent; width: 5px; position: absolute; top: 0px; opacity: 0.4; display: none; border-radius: 7px; z-index: 99; right: 1px; height: 94.5308px;"></div>
+																									<div class="slimScrollRail" style="width: 5px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;"></div>
+																								</div>
+																							</div>
+																						</div>
+
+
+																					{% endfor %}
+																				</div>
+
+																			</td>
+
+
+																		</tr>
+																	{% endfor %}
+																</td>
+															</tr>
+														</tbody>
+													</tbody>
+												</table>
+
+
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!--  Issues table -->
+
+							<div class="tab-pane fade" id="issue">
+								<div class="p-t-15">
+									<div class="card">
+										<div class="card-body">
+											<h4 class="card-title">Issues Table</h4>
+											<div class="table-responsive">
+												<table class="table header-border">
+													<thead>
+														<tr>
+															<th scope="col">Title</th>
+															<th scope="col">Description</th>
+
+
+															<th scope="col">Created at</th>
+															<th scope="col">State</th>
+
+															<th scope="col">Closed By</th>
+															<th scope="col">Tasks</th>
+															<th scope="col">Assignees</th>
+
+														</tr>
+													</thead>
+													<tbody>
+														{% for issue in issues %}
+															<tr>
+																<td>{{issue.title}}</td>
+																<td>{{ issue.description}}</td>
+
+
+																<td>{{ issue.created_at | date('d/m/Y') }}</td>
+
+																<td>
+																	{% if issue.state == "closed"%}
+																		<span class="badge badge-info">Closed</span>
+																		<span>{{issue.closed_at | date('d/m/Y') }}</span>
+																	{% endif %}
+																</td>
+
+																<td>
+																	{% if issue.state == "closed"%}
+																		<span><img alt="" class="rounded-circle mt-4" src="{{issue.closed_by.avatar_url}}" width="30" height="30"></span>
+																		{{issue.closed_by.username}}
+																	{% endif %}
+																</td>
+
+																<td>
+																	{% if issue.has_tasks == false %}
+																		<span class="badge badge-success px-2">No tasks</span>
+																	{% elseif issue.has_tasks == true %}
+																		<span class="badge badge-info">With tasks</span>
+																	{% endif %}
+																</td>
+																<td>
+																	<div class="outline-button">
+																		<button class="btn mb-1 btn-outline-danger" data-toggle="modal" data-target="#agregarPunto11">
+																			Assignees
+
+																		</button>
+																	</div>
+
+																	<div style="display: none;" class="modal fade" id="agregarPunto11" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+																		<div class="modal-dialog">
+																			<div class="modal-content">
+																				<div class="modal-header">
+																					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+																				</div>
+
+
+																				<div class="modal-body">
+																					{% for i in issue.assignees %}
+
+																						<div class="card">
+																							<div class="card-body">
+																								<h4 class="card-title">Assignees:
+																								</h4>
+																								<div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 390px;">
+																									<div id="activity" style="overflow: hidden; width: auto; height: 390px;">
+																										<div class="media border-bottom-1 pt-3 pb-3">
+																											<img width="35" src="{{i.avatar_url}}" class="mr-3 rounded-circle">
+																											<div class="media-body">
+																												<h5>{{ i.username }}</h5>
+																												<p class="mb-0">{{i.name}}</p>
+																											</div>
+																											{% if i.state == "active"%}
+																												<span class="badge badge-success px-2">Active</span>
+
+																											{% endif %}
+																										</div>
+																									</div>
+																									<div class="slimScrollBar" style="background: transparent; width: 5px; position: absolute; top: 0px; opacity: 0.4; display: none; border-radius: 7px; z-index: 99; right: 1px; height: 94.5308px;"></div>
+																									<div class="slimScrollRail" style="width: 5px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;"></div>
+																								</div>
+																							</div>
+																						</div>
+
+
+																					{% endfor %}
+																				</div>
+
+																			</td>
+
+																		</tr>
+																	{% endfor %}
+																</td>
+															</tr>
+														</tbody>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- Stat  ********************************************************************************** -->
+
+							<div class="tab-pane fade active show" id="message1">
+								<div class="p-t-15">
+									<div class="row">
+
+										<div class="col-lg-6">
+											<div class="card">
+												<div class="card-body">
+													<div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
+														<div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+															<div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
+														</div>
+														<div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+															<div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
+														</div>
+													</div>
+													<h4 class="card-title">Commits chart</h4>
+													<canvas id="doughutChart" width="452" height="135" class="chartjs-render-monitor" style="display: block; width: 452px; height: 135px;"></canvas>
+												</div>
+											</div>
+										</div>
+
+										<div class="col-lg-6">
+											<div class="card">
+												<div class="card-body">
+													<h4 class="card-title">Commits chart within the creation date</h4>
+													<canvas id="sales-chart" width="500" height="250"></canvas>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- end stat -->
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	<!-- ***********************events****************************** -->
+	<div class="row"><div class="col-md-6 col-lg-3">
+<div class="card">
+	<div class="card-header">Git Events</div>
+	<div class="card-body">
+		<h5 class="card-title">Push events</h5>
+		<p class="card-text">push</p>
+		<a href="#" class="btn mb-1 btn-danger">More details</a>
+	</div>
+</div></div><div class="col-md-6 col-lg-3">
+<div class="card">
+	<div class="card-header">Git Events</div>
+	<div class="card-body">
+		<h5 class="card-title">Issues Events</h5>
+		<p class="card-text">Issues</p>
+		<a href="#" class="btn mb-1 btn-danger">More details</a>
+	</div>
+</div></div><div class="col-md-6 col-lg-3">
+<div class="card">
+	<div class="card-header">Git Events</div>
+	<div class="card-body">
+		<h5 class="card-title">
+			Tags events</h5>
+		<p class="card-text">Tags</p>
+		<a href="#" class="btn mb-1 btn-danger">More details</a>
+	</div>
+</div></div><div class="col-md-6 col-lg-3">
+<div class="card">
+	<div class="card-header">Git Events</div>
+	<div class="card-body">
+		<h5 class="card-title">
+			Comments events</h5>
+		<p class="card-text">Comments</p>
+		<a href="#" class="btn mb-1 btn-danger">More details</a>
+	</div>
+</div></div></div></div>
+<script>
+    var ctx = document.getElementById("doughutChart");
+    ctx.height = 150;
+    var myChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+    datasets: [
+    {
+    data: [],
+    backgroundColor: [
+    "rgba(117, 113, 249,0.9)", "rgba(117, 113, 249,0.7)", "rgba(117, 113, 249,0.5)", "rgba(144,	104,	190,0.07)"
+    ],
+    hoverBackgroundColor: ["rgba(117, 113, 249,0.9)", "rgba(117, 113, 249,0.7)", "rgba(117, 113, 249,0.5)", "rgba(144,	104,	190,0.7)"]
+    }
+    ],
+    labels: []
+    },
+    options: {
+    responsive: true
+    }
+    });
+
+    var aaa = {{ dataa | raw }}
+    for (var key in aaa) {
+    this.myChart.data.labels.push(key);
+    this.myChart.data.datasets.forEach((dataset) => {
+    dataset.data.push(aaa[key]);
+    });
+    this.myChart.update();
+    }
+
+    var ctx = document.getElementById("sales-chart");
+    ctx.height = 150;
+    var myChartt = new Chart(ctx, {
+    type: 'line',
+    data: {
+    labels: [],
+    type: 'line',
+    defaultFontFamily: 'Montserrat',
+    datasets: [
+    {
+    label: "Commits per date",
+    data: [],
+    backgroundColor: 'transparent',
+    borderColor: '#7571F9',
+    borderWidth: 3,
+    pointStyle: 'circle',
+    pointRadius: 5,
+    pointBorderColor: 'transparent',
+    pointBackgroundColor: '#7571F9'
+
+    }
+    ]
+    },
+    options: {
+    responsive: true,
+    tooltips: {
+    mode: 'index',
+    titleFontSize: 12,
+    titleFontColor: '#000',
+    bodyFontColor: '#000',
+    backgroundColor: '#fff',
+    titleFontFamily: 'Montserrat',
+    bodyFontFamily: 'Montserrat',
+    cornerRadius: 3,
+    intersect: false
+    },
+    legend: {
+    labels: {
+    usePointStyle: true,
+    fontFamily: 'Montserrat'
+    }
+    },
+    scales: {
+    xAxes: [
+    {
+    display: true,
+    gridLines: {
+    display: false,
+    drawBorder: false
+    },
+    scaleLabel: {
+    display: false,
+    labelString: 'Month'
+    }
+    }
+    ],
+    yAxes: [
+    {
+    display: true,
+    gridLines: {
+    display: false,
+    drawBorder: false
+    },
+    scaleLabel: {
+    display: true,
+    labelString: 'Value'
+    }
+    }
+    ]
+    },
+    title: {
+    display: false,
+    text: 'Normal Legend'
+    }
+    }
+    });
+
+    var bbb = {{ dataDate | raw }}
+    for (var key in bbb) {
+    this.myChartt.data.labels.push(key);
+    this.myChartt.data.datasets.forEach((dataset) => {
+    dataset.data.push(bbb[key]);
+    });
+    this.myChartt.update();
+    }
+</script>
+<!--
+<script>
+    $(function () {
+    function groupTable($rows, startIndex, total) {
+    if (total === 0) {
+    return;
+    }
+    var i,
+    currentIndex = startIndex,
+    count = 1,
+    lst = [];
+    var tds = $rows.find('td:eq(' + currentIndex + ')');
+    var ctrl = $(tds[0]);
+    lst.push($rows[0]);
+    for (i = 1; i <= tds.length; i++) {
+    if (ctrl.text() == $(tds[i]).text()) {
+    count++;
+    $(tds[i]).addClass('deleted');
+    lst.push($rows[i]);
+    } else {
+    if (count > 1) {
+    ctrl.attr('rowspan', count);
+    groupTable($(lst), startIndex + 1, total - 1)
+    }
+    count = 1;
+    lst = [];
+    ctrl = $(tds[i]);
+    lst.push($rows[i]);
+    }
+    }
+    }
+    groupTable($('#myTable tr:has(td)'), 0, 3);
+    $('#myTable .deleted').remove();
+    });
+</script>-->
+<!--<script type="text/javascript">
+	setInterval("my_function();",10000); 
+	function my_function(){
+	window.location = location.href;
+	 console.log('aa');
+	}
+</script>-->
+{% endblock %}

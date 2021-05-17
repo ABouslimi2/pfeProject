@@ -1,0 +1,74 @@
+#index:
+#    path: /
+#    controller: App\Controller\DefaultController::index
+
+login:
+    path: /login
+    controller: App\Controller\SecurityController::login
+dashboard:
+    path: /admin/dashboard/{idTeam}
+    controller: App\Controller\Admin\AdminController::apiListGitLab
+show_teams:
+    path: /ListTeams
+    controller: App\Controller\Admin\TeamController::ShowTeams
+delete_team:
+    path: /ListTeams/delete/{idTeam}
+    controller: App\Controller\Admin\TeamController::deleteTeam
+add_team:
+    path: /ListTeams/add
+    controller: App\Controller\Admin\TeamController::addTeam
+edit_team:
+    path: /ListTeams/edit/{idTeam}
+    controller: App\Controller\Admin\TeamController::editTeam
+showGitHubteams:
+    path: /ListGitHubTeams
+    controller: App\Controller\TeamGitHubController::ShowTeams
+deleteGitHubteam:
+    path: /ListGitHubTeams/delete/{idTeam}
+    controller: App\Controller\TeamGitHubController::deleteTeam
+addGitHubteam:
+    path: /ListGitHubTeams/add
+    controller: App\Controller\TeamGitHubController::addTeam
+editGitHubteam:
+    path: /ListGitHubTeams/edit/{idTeam}
+    controller: App\Controller\TeamGitHubController::editTeam
+
+addTeamDash:
+    path: /ListTeamsDash/add
+    controller: App\Controller\DashboardController::addTeam
+mapDash:
+    path: /mapLDS
+    controller: App\Controller\DashboardController::getLocation
+api_show_details:
+    path:       /details/{id}/{idTeam}
+    controller: App\Controller\Admin\AdminController::showDetails
+show_pipelines:
+    path:       /Listpipelines/{id}/{idTeam}
+    controller: App\Controller\Admin\AdminController::showPipelines
+DeployQA:
+    path:       /RunPipelines/{id}/{idTeam}
+    controller: App\Controller\Admin\AdminController::RunPipeline
+home_test:
+    path:       /home/test/{id}
+    controller: App\Controller\HomeTestController::index
+Testdetails:
+    path:       /home/test/details/{id}
+    controller: App\Controller\HomeTestController::showDetails
+TestPipeline:
+    path:       /home/test/pipeline/{id}
+    controller: App\Controller\HomeTestController::RunPipeline
+#showTestpipelines:
+#    path:       /home/test/Listpipelines/{id}
+#    controller: App\Controller\HomeTestController::showTestPipelines
+retry_pipelines:
+    path:       /Listpipelines/retry/{id}/{idTeam}/{idpipe}
+    controller: App\Controller\Admin\AdminController::retryPipelines
+play_job:
+    path:       /Listpipelines/play/{id}/{idTeam}/{idjob}
+    controller: App\Controller\Admin\AdminController::playJob
+retry_job:
+    path:       /Listpipelines/retryjob/{id}/{idTeam}/{idjob}
+    controller: App\Controller\Admin\AdminController::retryJob
+cancel_pipeline:
+    path:       /Listpipelines/cancelpipeline/{id}/{idTeam}/{idpipe}
+    controller: App\Controller\Admin\AdminController::cancelPipeline

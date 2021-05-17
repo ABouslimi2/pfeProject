@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<!--**********************************
+            Content body start
+        ***********************************-->
+<div class="content-body">
+
+            <div class="row page-titles mx-0">
+                <div class="col p-md-0">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">{{data.name}}</a></li>
+                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Members</a></li>
+                    </ol>
+                </div>
+            </div>
+            <!-- row -->
+            <div class="row">
+                    {% for m in members %}
+                    <div class="col-4">
+                        <div class="card" style="margin-left:15px">
+                            <div class="card-body">
+                                <div class="text-center">
+                                    <img alt="" class="rounded-circle mt-4" src="{{m.avatar_url}}" width="100" height="100">
+                                    <h4 class="card-widget__title text-dark mt-3">{{ m.username}}</h4>
+                                    <p class="text-muted">{{m.name}}</p>
+                                </div>
+                            </div>
+                            <div class="card-footer border-0 bg-transparent">
+                                <div class="row">
+                                    <div class="col-4 border-right-1 pt-3">
+                                        <a class="text-center d-block text-muted" href="javascript:void()">
+                                            <i class="far fa-calendar-alt" ></i>
+                                            <p class="">Created at {{ m.created_at | date('Y')}}</p>
+                                        </a>
+                                    </div>
+                                    <div class="col-4 border-right-1 pt-3"><a class="text-center d-block text-muted" href="javascript:void()">
+                                        <i class="fa fa-heart gradient-3-text"></i>
+                                            <p class="">Like</p>
+                                        </a>
+                                    </div>
+                                    <div class="col-4 pt-3"><a class="text-center d-block text-muted" href="javascript:void()">
+                                        <i class="fa fa-envelope gradient-4-text"></i>
+                                            <p class="">Email</p>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% endfor %}
+                </div>
+</div>
+{% endblock %}

@@ -1,0 +1,221 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body">
+
+            <div class="row page-titles mx-0">
+                <div class="col p-md-0">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">{{team.team}}</a></li>
+                        <li class="breadcrumb-item active"><a href="javascript:void(0)">GitLab Projects</a></li>
+                    </ol>
+                </div>
+            </div>
+            <!-- row -->
+
+            <div class="container-fluid">
+           
+<div class="card">
+            <div class="card-body">
+                                <h3 class="card-title"><img src="{{asset('assets/images/gitlab-logo.png') }}" width="80" height="60" /> Projects</h3>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered verticle-middle">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">ID</th>
+                                                <th scope="col">Created at</th>
+                                                <th scope="col">Last Activity</th>
+                                                <th scope="col">Frequency</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                         {% for d in data %}
+                                            <tr>
+                                                <td>{{ d.name }}</td>
+                                                <td>
+                                                   {{ d.id }}
+                                                </td>
+                                                <td>{{ d.created_at | date('d/m/Y')}}</td>
+                                                <td>
+                                                {{ d.last_activity_at| date('d/m/Y')}}
+                                                </td>
+                                                <td>
+                                                    <div class="progress" style="height: 10px">
+                                                        <div class="progress-bar gradient-2" style="width: 70%;" role="progressbar"><span class="sr-only">70% Complete</span>
+                                                        </div>
+                                                    </div> 
+                                                </td>
+                                                
+                                                <td>
+                                               
+                                                <a href="{{ path('api_show_details', { 'id': d.id , 'idTeam' : team.id}) }}" style="color:#FF0000;" ><i class="fa fa-info-circle" aria-hidden="true"></i> More details </a>
+                                                
+                                                </td>
+                                                
+                                            </tr>
+
+                                            {% endfor %}
+                                            
+                                           
+                                           
+                                            
+                                           
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+            </div>
+            </div>
+
+            <div class="row" style="margin-left:12px;" >
+            <div class="col-lg-6" width="50%" height="50%" style="display: block; width: 50%; height: 50%">
+                      
+                    
+                        <div class="card">
+                            <div class="card-body"><div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+                                <h4 class="card-title">{{team.team}} : Actions number per project</h4>
+                                <canvas id="sales-chart" class="chartjs-render-monitor"></canvas>
+                            </div>
+                        </div>
+            </div>
+            </div>
+            <!-- #/ container -->
+        </div>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+
+
+<script>
+     var aaa = {{ projectsStats | raw}}
+    //Sales chart
+    var ctx = document.getElementById("sales-chart");
+    ctx.height = 150;
+    var myChartt = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            type: 'line',
+            defaultFontFamily: 'Montserrat',
+            datasets: [{
+                label: "Commits",
+                data: [],
+                backgroundColor: 'transparent',
+                borderColor: '#7571F9',
+                borderWidth: 3,
+                pointStyle: 'circle',
+                pointRadius: 5,
+                pointBorderColor: 'transparent',
+                pointBackgroundColor: '#7571F9',
+
+            }, {
+                label: "Merges",
+                data: [],
+                backgroundColor: 'transparent',
+                borderColor: 'red',
+                borderWidth: 3,
+                pointStyle: 'circle',
+                pointRadius: 5,
+                pointBorderColor: 'transparent',
+                pointBackgroundColor: 'red',
+            }, {
+                label: "Releases",
+                data: [],
+                backgroundColor: 'transparent',
+                borderColor: '#173e43',
+                borderWidth: 3,
+                pointStyle: 'circle',
+                pointRadius: 5,
+                pointBorderColor: 'transparent',
+                pointBackgroundColor: '#173e43',
+            }]
+        },
+        options: {
+            responsive: true,
+
+            tooltips: {
+                mode: 'index',
+                titleFontSize: 12,
+                titleFontColor: '#000',
+                bodyFontColor: '#000',
+                backgroundColor: '#fff',
+                titleFontFamily: 'Montserrat',
+                bodyFontFamily: 'Montserrat',
+                cornerRadius: 3,
+                intersect: false,
+            },
+            legend: {
+                labels: {
+                    usePointStyle: true,
+                    fontFamily: 'Montserrat',
+                },
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    gridLines: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    scaleLabel: {
+                        display: false,
+                        labelString: 'Month'
+                    },
+                     ticks: {
+                        autoSkip: false,
+                        //maxTicksLimit: 20
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    gridLines: {
+                        display: false,
+                        drawBorder: false
+                    },
+                     ticks: {
+                            suggestedMin: 0,
+                           // suggestedMax: 1000,
+                            stepSize: 100
+                        },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Value'
+                    }
+                }]
+            },
+            title: {
+                display: false,
+                text: 'Normal Legend'
+            }
+        }
+    });
+      
+    for (var i = 0; i < aaa.length; i++) {
+        for(var key in aaa[i]){
+            this.myChartt.data.labels.push([key]);
+                for (keyy in aaa[i][key]){
+                    for(let j = 0; j < this.myChartt.data.datasets.length; j++){ 
+                        if (this.myChartt.data.datasets[j].label == 'Commits' && [keyy] == "commits"){
+                            this.myChartt.data.datasets[j].data.push(aaa[i][key][keyy]);
+                        }
+                        else if (this.myChartt.data.datasets[j].label == 'Releases' && [keyy] == "releases"){
+                            this.myChartt.data.datasets[j].data.push(aaa[i][key][keyy]);
+                        }
+                        else if (this.myChartt.data.datasets[j].label == 'Merges' && [keyy] == "merges"){
+                            this.myChartt.data.datasets[j].data.push(aaa[i][key][keyy]);
+                        }
+                    }
+                    this.myChartt.update(); 
+                }
+        }
+    }
+</script>
+
+{% endblock %}
+                       
