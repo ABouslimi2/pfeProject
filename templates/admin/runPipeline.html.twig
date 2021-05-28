@@ -22,26 +22,14 @@
            <div class="col-md-12">
             </div>
             {#{form (pipelineForm)}#}
-            <!--- Pipelines *******************************************************************-->
-<div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title">Pipelines</h4>
+            <!--- Deploy QA*******************************************************************-->
+<div class="row">
+<div class="col-sm">
+<div class="card" style="width:400px;height:320px;">
+    <div class="card-body">
+                                <h4 class="card-title">Deploy QA</h4>
                    
-                                        {#{ form_start(form) }}
-                                            <div class="my-custom-class-for-errors">
-                                                {{ form_errors(form) }}
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col">
-                                                    {{ form_row(form.Branches) }}
-                                                </div>
-                                                <div class="col">
-                                                    {{ form_row(form.Run) }}
-                                                </div>
-                                            </div>
-                                        {{ form_end(form) }#}
-                                  
+                                       
             <form name="form" action="{{ path('DeployQA', { 'id': id ,'idTeam': team.id }) }}" method="POST" >   
                 <div class="form-row">
                     <div class="form-group col-md-4">
@@ -79,13 +67,74 @@
                             </div>
                                                 <button class="btn mb-1 btn-danger" type="submit">Run pipeline</button>
 
-                                            </form>
+            </form>
 
-                            </div>
-                        </div>
-
+    </div>
+</div>
+</div>
 
 <!-- end pipelines****************************************************************************-->
+ <!--- Pass Call *******************************************************************-->
+
+<div class="col-sm">
+<div class="card" style="width:400px;height:320px;">
+    <div class="card-body">
+                                <h4 class="card-title">Pass Call</h4>
+                   
+                                       
+            <form name="form" action="{{ path('PassCall', { 'id': id ,'idTeam': team.id }) }}" method="POST" >   
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                                                                    
+                        <label>Branche Name</label>
+                        <select name="inputBranch1" class="form-control">
+                                                                        
+                            {% for b in nameBranche %}
+                                <option value={{ b }} required>{{ b }}</option>
+
+                                    {% endfor %}
+                                    </select>
+
+                             </div>                                    
+                            </div>
+                                                <button class="btn mb-1 btn-danger" type="submit">Run pipeline</button>
+
+            </form>
+
+    </div>
+</div>
+</div></div>
+ <!--- Deploy preprod *******************************************************************-->
+<div class="row">
+<div class="col-sm">
+<div class="card" style="width:400px;height:320px;">
+    <div class="card-body">
+                                <h4 class="card-title">Deploy Preprod</h4>
+                   
+                                       
+            <form name="form" action="{{ path('DeployQA', { 'id': id ,'idTeam': team.id }) }}" method="POST" >   
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                                                                    
+                        <label>Branche Name</label>
+                        <select name="inputBranch2" class="form-control">
+                                                                        
+                            {% for b in nameBranche %}
+                                <option value={{ b }} required>{{ b }}</option>
+
+                                    {% endfor %}
+                                    </select>
+
+                             </div>                                    
+                            </div>
+                                                <button class="btn mb-1 btn-danger" type="submit">Run pipeline</button>
+
+            </form>
+
+    </div>
+</div>
+</div></div>
+
             </div>
 
 

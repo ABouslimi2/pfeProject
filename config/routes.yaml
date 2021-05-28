@@ -5,9 +5,16 @@
 login:
     path: /login
     controller: App\Controller\SecurityController::login
+    methods: GET|POST
 dashboard:
     path: /admin/dashboard/{idTeam}
     controller: App\Controller\Admin\AdminController::apiListGitLab
+git_hubRepos:
+    path: /GitHub/Repos/{idTeam}
+    controller: App\Controller\GitHubController::index
+git_hubDetails:
+    path: /GitHub/details/{owner}/{name}/{idTeam}
+    controller: App\Controller\GitHubController::showDetails
 show_teams:
     path: /ListTeams
     controller: App\Controller\Admin\TeamController::ShowTeams
@@ -48,6 +55,9 @@ show_pipelines:
 DeployQA:
     path:       /RunPipelines/{id}/{idTeam}
     controller: App\Controller\Admin\AdminController::RunPipeline
+PassCall:
+    path:       /RunPipelineNoVar1/{id}/{idTeam}
+    controller: App\Controller\Admin\AdminController::RunPipelineNoVars
 home_test:
     path:       /home/test/{id}
     controller: App\Controller\HomeTestController::index
@@ -72,3 +82,4 @@ retry_job:
 cancel_pipeline:
     path:       /Listpipelines/cancelpipeline/{id}/{idTeam}/{idpipe}
     controller: App\Controller\Admin\AdminController::cancelPipeline
+

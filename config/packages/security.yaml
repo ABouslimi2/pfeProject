@@ -4,11 +4,11 @@ security:
         my_ldap:
             ldap:
                 service: Symfony\Component\Ldap\Ldap
-                base_dn: 'DC=ad,DC=linedata,DC=com'
+                base_dn: OU=Regional,DC=ad,DC=linedata,DC=com
                 search_dn: 'CN=SA_KenLDAP,OU=Service Accounts,OU=Global,DC=ad,DC=linedata,DC=com'
-                search_password: 'LDS@ken01'
-                default_roles: ROLE_USER
+                search_password: LDS@ken01
                 uid_key: sAMAccountName
+                #extra_fields: ['dsqjdsqdhsqdsjq']
     
     firewalls:
         dev:
@@ -21,9 +21,9 @@ security:
                 login_path: login
                 check_path: login
                 service: Symfony\Component\Ldap\Ldap
-                dn_string: 'sAMAccountName={username},dc=ad,dc=linedata,dc=com'
+                dn_string: sAMAccountName={username},OU=Regional,DC=ad,DC=linedata,DC=com
                 default_target_path: dashboard
-                
+                csrf_token_generator: security.csrf.token_manager
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         #- { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }

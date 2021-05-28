@@ -406,4 +406,44 @@ class AdminController extends AbstractController
         ]);
     }
 
+    public function RunPipelineNoVars(int $id, CallApiService $callapiservice, Request $request,$idTeam, ServerEndpointRepository $sp): Response
+    {
+        $team = $sp ->find($idTeam);
+        $url = $team -> getGitlabURL();
+        $token = $team -> getToken();
+        $branches=$callapiservice -> GetProjectBranches($id,$url,$token);
+        
+
+        $nameBranche = array();
+        foreach ($branches as $b) {
+            array_push($nameBranche, $b['name']);
+        }
+        
+
+        if ($request->getMethod() == 'POST') {
+            $dataBranch1 = $request->get('inputBranch1');
+            
+
+            // run pipe sans variables
+            
+                $callapiservice->RunTestPipelineJobs($id, $dataBranch1,$url,$token);
+                return $this->redirectToRoute('show_pipelines', [
+                    'id' => $id,
+                    'idTeam' => $team->getId(),
+                    'team' => $team
+                ]);
+            
+            //run with variables
+          
+        }
+        return $this->render("admin/runPipeline.html.twig", [
+            'data' => $callapiservice -> GetGitLabOneProject($id, $url, $token),
+            'idTeam' => $team->getId(),
+            'nameBranche' => $nameBranche,
+            'branches' => $branches,
+            'id' => $id,
+            'team' => $team
+        ]);
+    }
+
 }

@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+
+<!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body">
+
+            <div class="row page-titles mx-0">
+                <div class="col p-md-0">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">{{team.team}}</a></li>
+                        <li class="breadcrumb-item active"><a href="javascript:void(0)">GitHub Projects</a></li>
+                    </ol>
+                </div>
+            </div>
+            <!-- row -->
+
+            <div class="container-fluid">
+           
+             <div class="card">
+                    <div class="card-body">
+                                <h3 class="card-title"><img src="{{asset('assets/images/github.png') }}" width="160" height="45" /></h3>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered verticle-middle">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">ID</th>
+                                                <th scope="col">Created at</th>
+                                                <th scope="col">Last Activity</th>
+                                                <th scope="col">Frequency</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                         {% for d in data %}
+                                            <tr>
+                                                <td>{{ d.name }}</td>
+                                                <td>
+                                                   {{ d.id }}
+                                                </td>
+                                                <td>{{ d.created_at | date('d/m/Y')}}</td>
+                                                <td>
+                                                {{ d.updated_at| date('d/m/Y')}}
+                                                </td>
+                                                <td>
+                                                    <div class="progress" style="height: 10px">
+                                                        <div class="progress-bar gradient-2" style="width: 70%;" role="progressbar"><span class="sr-only">70% Complete</span>
+                                                        </div>
+                                                    </div> 
+                                                </td>
+                                                
+                                                <td>
+                                               
+                                                <a href="{{ path('git_hubDetails', { 'owner': d.owner.login , 'name': d.name ,'idTeam' : team.id}) }}" style="color:#FF0000;" ><i class="fa fa-info-circle" aria-hidden="true"></i> More details </a>
+                                                
+                                                </td>
+                                                
+                                            </tr>
+
+                                            {% endfor %}
+                                            
+                                           
+                                           
+                                            
+                                           
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                </div>
+
+            </div>
+
+ <!--**********************************
+            Content body end
+        ***********************************-->
+{% endblock %}

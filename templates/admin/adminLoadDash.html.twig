@@ -1,0 +1,67 @@
+{% for key, array1 in tabToReturn %}
+	{% for keyy, array2 in array1 %}
+		<div class="container-fluid">
+			<div class="card">
+				<div class="card-body">
+					{% for t in teams %}
+						<h5> {{keyy}} : <b>  {{t.team}}'s Git Server Projects: </b>  </h5>
+					{% endfor %}
+					<div class="table-responsive">
+						<table class="table table-bordered verticle-middle">
+							<thead>
+								<tr>
+									<th scope="col">Name</th>
+									<th scope="col">ID</th>
+									<th scope="col">Created at</th>
+									<th scope="col">Last Activity</th>
+									<th scope="col">Frequency</th>
+
+								</tr>
+							</thead>
+							<tbody>
+								{% for keyyy, array3 in array2 %}
+									{% for keyyyy, array4 in array3 %}
+
+										<tr>
+											<td>{{ array4.name }}</td>
+											<td>
+												{{ array4.id }}
+											</td>
+											<td>{{ array4.created_at | date('d/m/Y')}}</td>
+											<td>
+												{{ array4.last_activity_at| date('d/m/Y')}}
+											</td>
+											<td>
+												<div class="progress" style="height: 10px">
+													<div class="progress-bar gradient-2" style="width: 70%;" role="progressbar">
+														<span class="sr-only">70% Complete</span>
+													</div>
+												</div>
+											</td>
+
+											<td>
+											{%  for team in teams %}
+											{%  if team.gitlabURL == keyy %}
+<a href="{{ path('api_show_details', { 'id': array4.id , 'idTeam' : team.id }) }}" style="color:#FF0000;" ><i class="fa fa-info-circle" aria-hidden="true"></i> More details </a>
+											{%  endif %}
+											{%  endfor %}
+                                            </td>
+
+										</tr>
+
+
+									{% endfor %}
+								{% endfor %}
+
+
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+			</div>
+
+	{% endfor %}
+
+{% endfor %}
+

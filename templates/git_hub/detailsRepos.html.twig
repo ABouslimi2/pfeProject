@@ -1,0 +1,258 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+
+<!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body">
+
+            <div class="row page-titles mx-0">
+                <div class="col p-md-0">
+                    <ol class="breadcrumb">
+                    
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">{{ data.name}}</a></li>
+                        <li class="breadcrumb-item active"><a href="javascript:void(0)">GitHub Projects</a></li>
+                    
+                    </ol>
+                </div>
+            </div>
+            <!-- row -->
+
+            <div class="container-fluid">
+           <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                                <h4 class="card-title">Project Overview</h4>
+                                <!-- Nav tabs -->
+                                <div class="default-tab">
+                                    <ul class="nav nav-tabs mb-3" role="tablist">
+                                        <li class="nav-item"><a class="nav-link active show" data-toggle="tab" href="#home"><img src="{{asset('assets/images/commit.png') }}"/> {{commitNb}} Commits</a>
+                                        </li>
+                                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#profile"><i class="ti-user" ></i></span>{{number}} Members</a>
+                                        </li>
+                                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#branche"><img src="{{asset('assets/images/branche.png') }}"/> {{brancheNB}} Branches</a>
+                                        </li>
+                                        <li class="nav-item"><a class="nav-link " data-toggle="tab" href="#message">{{issuesNB}} Issues</a>
+                                        </li>
+                                    </ul>
+                                    
+                                    <div class="tab-content">
+                                    <!-- Commits table -->
+                                        <div class="tab-pane fade active show" id="home" role="tabpanel">
+                                            <div class="p-t-15">
+                                           
+                                                       <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title"><img src="{{asset('assets/images/commit.png') }}"/>Commits Table</h4>
+                                <div class="table-responsive">
+                                    <table class="table header-border" id="myTable">
+                                        <thead>
+                                            <tr>   
+                                                <th scope="col">Committer Name</th>
+                                                <th scope="col">Committer Email</th>
+                                                <th scope="col">Committed Date</th>   
+                                                <th scope="col">Message</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for c in commits   | sort((a, b) => a.commit.committer.name <=> b.commit.committer.email) %}
+                                            <tr> 
+                                                <td>{{ c.commit.committer.name}}</td>
+                                                <td>{{ c.commit.committer.email}}</td>
+                                                <td>{{ c.commit.committer.date | date('d/m/Y')}}</td>
+                                                <td>{{ c.commit.message}}</td>
+                                                
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <div class="d-flex justify-content-center">
+													{#{ knp_pagination_render(commits, 'pagination.html.twig') }#}
+												</div>
+                                </div>
+                            </div>
+                        </div>
+											
+                                            </div>
+                                        </div>
+                                    <!-- end Commits table -->
+                                    <!-- members -->
+                                        <div class="tab-pane fade" id="profile">
+                                            <div class="p-t-15">
+											 <div class="row">
+                                                    {% for m in members %}
+                                             <div class="col-4">
+                                                <div class="card" style="margin-left:15px">
+                                                     <div class="card-body">
+                                                          <div class="text-center">
+                                                            <img alt="" class="rounded-circle mt-4" src="{{m.avatar_url}}" width="70" height="70">
+                                                            <h4 >{{ m.login}}</h4>
+                                                                 {% endfor %}
+                                                            </div>
+                                                    </div>
+                                                    
+                                                     </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    <!-- end members -->
+                                    <!-- branches -->
+                                        <div class="tab-pane fade" id="branche">
+                                            <div class="p-t-15">
+                                          <div class="col-lg-12">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                    {% for b in branches %}
+                                                    <table>
+                                                    <tr>
+                                                    <td><h4 class="card-title">{{b.name}}</h4> </td>
+                                                    
+                                                    </tr>
+                                                    </table>
+                                                        {% for c in commits %}
+                                                        <h6>Commited at: {{c.commit.committer.date | date('d/m/Y')}} </h6> 
+                                                    
+                                                        <div class="custom-media-object-2">
+                                                            <div class="media border-bottom-1 p-t-15">
+                                                            <!-- <img class="mr-3 rounded-circle" src="{{asset('assets/images/user/1.png') }}" alt=""> -->
+                                                                <div class="media-body">
+                                                                    <div class="row">
+                                                                        <div class="col-lg-5">
+                                                                            <h5>{{c.commit.author.name}}</h5>
+                                                                            <p>{{c.commit.author.email}}</p>
+                                                                        </div>
+                                                                        <div class="col-lg-5">
+                                                                            
+                                                                            <p class="text-muted f-s-14">{{c.commit.message}}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {% endfor %}
+                                                        {% endfor %}
+                                                    </div>
+
+                                                
+                                                </div>
+                                            </div>
+                                                                 
+                                            </div>
+                                        </div>
+                                    <!-- end branches -->
+                                        <div class="tab-pane fade" id="message">
+                                            <div class="p-t-15">
+											<div class="card">
+                            <div class="card-body">
+                             {% if issuesNB == 0 %}
+                            <h3> Project with no issues ! </h3>
+                            {% else %}
+                                <h4 class="card-title">Issues Table</h4>
+                                <div class="table-responsive">
+                                    <table class="table header-border">
+                                        <thead>
+                                            <tr>   
+                                                <th scope="col">Title</th>
+												 <th scope="col">Created at</th>
+                                                <th scope="col">Updated at</th>
+                                                 
+                                                 
+                                               
+                                                <th scope="col">State</th>   
+                                               
+                                                
+                                               
+                                                <th scope="col">Assignees</th>
+                                               
+                                           </tr>
+                                        </thead>
+                                        <tbody>
+                                       
+                                        {% for issue in issues %}
+                                            <tr> 
+                                                <td>{{issue.title}}</td> 
+                                                <td>{{ issue.created_at | date('d/m/Y') }}</td>
+												<td>{{ issue.updated_at | date('d/m/Y') }}</td>
+                                                
+                                                <td>{% if issue.state == "closed"%}
+                                                <span class="badge badge-info">Closed</span>
+                                                {% else %}
+												<span class="badge badge-danger">Opened</span>
+                                                {% endif %}
+                                                </td>
+                                                <td>
+                                                <div class="outline-button">
+                                                    <button class="btn mb-1 btn-outline-danger" data-toggle="modal" data-target="#agregarPunto11">
+                                                    Assignees
+       
+                                                    </button>
+                                                </div>
+
+                                                <div  style="display: none;"  class="modal fade" id="agregarPunto11" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                
+            </div>
+               
+ 
+<div class="modal-body">
+ {% for i in issue.assignees %}
+ 
+ <div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Assignees: </h4>
+            <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 390px;"><div id="activity" style="overflow: hidden; width: auto; height: 390px;">
+                                    <div class="media border-bottom-1 pt-3 pb-3">
+                                        <img width="35" src="{{i.avatar_url}}" class="mr-3 rounded-circle">
+                                        <div class="media-body">
+                                            <h5>{{ i.login }}</h5>
+                                            
+                                        </div>
+                                        
+                                    </div>
+                                </div><div class="slimScrollBar" style="background: transparent; width: 5px; position: absolute; top: 0px; opacity: 0.4; display: none; border-radius: 7px; z-index: 99; right: 1px; height: 94.5308px;"></div><div class="slimScrollRail" style="width: 5px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;"></div></div>
+                </div>
+            </div>
+
+
+{% endfor %}
+</div>
+                                                
+                                             </td>
+                                               
+                                                </tr>
+                                                
+                                        {% endfor %}
+                                       
+                                        </tbody>
+                                    </table>
+                                </div>
+ {% endif %}
+
+ 
+                            </div>
+                        </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+  </div>
+
+                   
+
+           
+<!--**********************************
+            Content body end
+        ***********************************-->
+     </div>
+            </div>
+        
+        </div>
+        </div>
+{% endblock %}

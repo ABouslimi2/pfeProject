@@ -84,7 +84,16 @@
                             </div>
                         </div>
             </div>
-            </div>
+            <!-- div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body"><div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+                                <h4 class="card-title">Bar chart</h4>
+                                <canvas id="barChart" width="416" height="124" style="display: block; width: 416px; height: 124px;" class="chartjs-render-monitor"></canvas>
+                            </div>
+                        </div>
+                    </div>
+            </div -->
+            
             <!-- #/ container -->
         </div>
         <!--**********************************
@@ -212,6 +221,73 @@
                         }
                     }
                     this.myChartt.update(); 
+                }
+        }
+    }
+</script>
+
+<script>
+ //bar chart
+    var ctx = document.getElementById("barChart");
+    ctx.height = 150;
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [
+                {
+                    label: "Commits",
+                    data: [65, 59, 80, 81, 56, 55, 40],
+                    borderColor: "rgba(117, 113, 249, 0.9)",
+                    borderWidth: "0",
+                    backgroundColor: "rgba(117, 113, 249, 0.5)"
+                },
+                {
+                    label: "Merges",
+                    data: [28, 48, 40, 19, 86, 27, 90],
+                    borderColor: "rgba(144,	104,	190,0.9)",
+                    borderWidth: "0",
+                    backgroundColor: "rgba(144,	104,	190,0.7)"
+                },
+                 {
+                    label: "Releases",
+                    data: [28, 48, 40, 19, 86, 27, 90],
+                    borderColor: "red",
+                    borderWidth: "0",
+                    backgroundColor: "red"
+                }
+            ]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }],
+                xAxes: [{
+                    // Change here
+                    barPercentage: 0.2
+                }]
+            }
+        }
+    });
+ for (var i = 0; i < aaa.length; i++) {
+        for(var key in aaa[i]){
+            this.myChart.data.labels.push([key]);
+                for (keyy in aaa[i][key]){
+                    for(let j = 0; j < this.myChart.data.datasets.length; j++){ 
+                        if (this.myChart.data.datasets[j].label == 'Commits' && [keyy] == "commits"){
+                            this.myChart.data.datasets[j].data.push(aaa[i][key][keyy]);
+                        }
+                        else if (this.myChart.data.datasets[j].label == 'Releases' && [keyy] == "releases"){
+                            this.myChart.data.datasets[j].data.push(aaa[i][key][keyy]);
+                        }
+                        else if (this.myChart.data.datasets[j].label == 'Merges' && [keyy] == "merges"){
+                            this.myChart.data.datasets[j].data.push(aaa[i][key][keyy]);
+                        }
+                    }
+                    this.myChart.update(); 
                 }
         }
     }

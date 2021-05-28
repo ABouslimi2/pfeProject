@@ -192,7 +192,7 @@ class CallApiService
     {
         $response = $this->client->request (
             'POST',
-            $url.'/api/v4/projects/'.$id.'/jobs/'.$idjob.'/play?ref=pfetest&[QA_INSTANCE]=10&access_token='.$token
+            $url.'/api/v4/projects/'.$id.'/jobs/'.$idjob.'/play?access_token='.$token
         );
     
       return $response->toArray();
@@ -308,6 +308,7 @@ class CallApiService
       
     }
     
+ 
 
    
     

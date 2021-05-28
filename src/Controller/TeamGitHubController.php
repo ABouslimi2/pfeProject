@@ -46,15 +46,18 @@ class TeamGitHubController extends AbstractController
     public function ShowTeams(ServerEndpointRepository $serverRep,Request $request):Response
     {
         $teamsName = [];
+        $teamsURL = [];
         
         $teamss =  $serverRep -> findAll();
         foreach ($teamss as $name){
             array_push($teamsName,$name->getTeam());
+            array_push($teamsURL,$name ->getGitlabURL());
         }
         $teams = $serverRep -> findTeamByTypeGitHub();
         return $this->render("admin/showTeamsGitHub.html.twig", [
             'teams' => $teams,   
-            'names' => json_encode($teamsName),  
+            'names' => json_encode($teamsName), 
+            'urls' => json_encode($teamsURL), 
         ]);
     }
 

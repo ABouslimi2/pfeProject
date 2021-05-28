@@ -36,7 +36,27 @@ class ServerEndpointRepository extends ServiceEntityRepository
     }
     */
 
-   
+    public function findByUrl($value)
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.gitlabURL = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+  
+    public function findByUrlTakeFirst($value)
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.gitlabURL = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getResult()
+            ->first()
+        ;
+    }
+    
     public function findTeamByTypeGitlab()
     {
         $result = $this->createQueryBuilder('e')

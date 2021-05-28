@@ -63,14 +63,13 @@
                 </div>
                 <div class="header-right">
                     <ul class="clearfix">
-                     
-                        <li class="icons dropdown"><a href="javascript:void(0)" data-toggle="dropdown">
+                        <li class="icons dropdown"><a href="javascript:void(0)" class="notiff" data-toggle="dropdown">
                                 <i class="mdi mdi-bell-outline"></i>
-                                <span class="badge badge-pill gradient-2 badge-primary">3</span>
+                                <span class="badge badge-pill gradient-2 badge-primary nbNotif"></span>
                             </a>
                             <div class="drop-down animated fadeIn dropdown-menu dropdown-notfication">
                                 <div class="dropdown-content-heading d-flex justify-content-between">
-                                    <span class="">2 New Notifications</span>  
+                                    <span class="">New Notifications</span>  
                                     
                                 </div>
                                 <div class="dropdown-content-body">
@@ -159,5 +158,22 @@
             Sidebar end
         ***********************************-->
 
-        
-        
+    
+ <script>
+
+ var nbNotifications = 0 ;
+ //$('.notiff').click( function(e) { nbNotifications=0; $('.nbNotif').text(''); return false; } );
+
+	const eventSource = new EventSource('http://localhost:3000/.well-known/mercure?topic=' 
+	+ encodeURIComponent('/release'));
+	eventSource.onmessage = event => {
+        var obj = JSON.parse(event.data);
+    nbNotifications = nbNotifications +1;
+    $('.nbNotif').text(nbNotifications);
+    $('.notification-heading').text('Project '+ obj.projectName + ' with id '+obj.project+' that belongs to '+obj.team+' with server url '
+    +obj.server+' has new '+obj.action);
+     $('.notification-text').text('Number of '+obj.action+' becomes '+obj.nbRelease);
+    
+    console.log(JSON.parse(event.data));
+}
+</script>
