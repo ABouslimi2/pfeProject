@@ -84,11 +84,12 @@
 													<th scope="col">Status</th>
 													<th scope="col">Pipeline</th>
 													<th scope="col">Refrence</th>
+													<th scope="col">Action</th>
 													<th scope="col">Created At</th>
 													<th scope="col">Updated At</th>
 
 													<th scope="col">Jobs</th>
-													<th scope="col">Action</th>
+													
 												</tr>
 											</thead>
 											<tbody>
@@ -137,6 +138,16 @@
 															<img src="{{asset('assets/images/branche.png') }}"/>
 															{{ p.ref }}
 														</td>
+														 <td>
+ 
+															{%  if (p.status == "failed") or (p.status == "canceled") or (p.status == "skipped") %}
+															
+															<a href="{{ path('retry_pipelines', { 'id': data.id, 'idTeam': team.id  ,'idpipe' : p.id }) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="Retry" style="background-color: white;border-color:red;text-color:black;" type="button" class="btn"><i class="fa fa-repeat" aria-hidden="true"></i></a>
+															{% elseif (p.status == "running") %}
+															<a href="{{ path('cancel_pipeline', { 'id': data.id, 'idTeam': team.id  ,'idpipe' : p.id }) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="Cancel" style="background-color: white;border-color:red;text-color:black;" type="button" class="btn"><i class="fa fa-ban" aria-hidden="true"></i></a>
+
+															{% endif %}
+                                            </td>
 														<td style="width: 15%; text-align: right;">
 															<i class="mdi mdi-calendar-check"></i>
 															{{ p.created_at | date('d/m/Y') }}
@@ -216,16 +227,7 @@
 															{% endfor %}
 															
 														</td>
-														 <td>
- 
-															{%  if (p.status == "failed") or (p.status == "canceled") or (p.status == "skipped") %}
-															
-															<a href="{{ path('retry_pipelines', { 'id': data.id, 'idTeam': team.id  ,'idpipe' : p.id }) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="Retry" style="background-color: white;border-color:red;text-color:black;" type="button" class="btn"><i class="fa fa-repeat" aria-hidden="true"></i></a>
-															{% elseif (p.status == "running") %}
-															<a href="{{ path('cancel_pipeline', { 'id': data.id, 'idTeam': team.id  ,'idpipe' : p.id }) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="Cancel" style="background-color: white;border-color:red;text-color:black;" type="button" class="btn"><i class="fa fa-ban" aria-hidden="true"></i></a>
-
-															{% endif %}
-                                            </td>
+														
 											
 													</tr>
 												{% endfor %}

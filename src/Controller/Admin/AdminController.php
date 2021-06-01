@@ -104,6 +104,10 @@ class AdminController extends AbstractController
         $pipelines=$callapiservice -> GetProjectPipelines($id,$url,$token);
         $idspipeline = [];
 
+        $nameBranche = array();
+        foreach ($branches as $b) {
+            array_push($nameBranche, $b['name']);
+        }
         
 
 
@@ -204,9 +208,13 @@ class AdminController extends AbstractController
             'dataDate' => json_encode($dataDate),
             'team' => $team ,
             
+            'idTeam' => $team->getId(),
+            'nameBranche' => json_encode($nameBranche),
+            
         ]);
     }
 
+   
     
     public function showPipelines(int $id,CallApiService $callapiservice,Request $request,
     PaginatorInterface $paginator,$idTeam, ServerEndpointRepository $sp):Response
@@ -445,5 +453,32 @@ class AdminController extends AbstractController
             'team' => $team
         ]);
     }
+
+    public function addBranch(int $id, CallApiService $callapiservice, Request $request,$idTeam, ServerEndpointRepository $sp): Response
+    {
+        $team = $sp ->find($idTeam);
+        $url = $team -> getGitlabURL();
+        $token = $team -> getToken();
+        $branches=$callapiservice -> GetProjectBranches($id,$url,$token);
+       
+        if ($request->getMethod() == 'POST') {
+            $createdFromB = $request->get('inputVariableB');
+            $newBranchName = $request->get('newB');
+
+            $callapiservice->postBranch($id,$createdFromB,$newBranchName,$url,$token);
+                
+            return $this -> json([
+                'branches' => $branches,
+               
+            ], 200);
+               
+        }
+        return $this -> json([
+            'branches' => $branches,
+        ], 200);
+            
+    }
+
+  
 
 }

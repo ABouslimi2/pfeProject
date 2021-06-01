@@ -236,6 +236,16 @@ class CallApiService
         return $response->toArray();
     }
 
+    public function postBranch(int $id,$branche,$newBranchName,$url,$token)
+    {
+         $response = $this->client->request (
+            'POST',
+            $url.'/api/v4/projects/'.$id.'/repository/branches?ref='.$branche.'&branch='.$newBranchName.'&access_token='.$token
+        );
+    
+      return $response->toArray();
+    }
+
     //*************************************Testtttt****************************************** */
    private function getApiTest(string $var)
    {

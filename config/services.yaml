@@ -35,7 +35,7 @@ services:
         arguments: ['@Symfony\Component\Ldap\Adapter\ExtLdap\Adapter']
     Symfony\Component\Ldap\Adapter\ExtLdap\Adapter:
         arguments:
-            -   host: TN1ADS05.ad.linedata.com
+            -   host: ln1ads01.ad.linedata.com
                 port: 636
                 #encryption: tls
                 options:

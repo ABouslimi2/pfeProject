@@ -133,6 +133,8 @@ class DashboardController extends AbstractController
                          $loc->releases = $releasesNumber;
                          $releasesNumber = 0 ;
                          $commitNumber = 0 ;
+
+
                 }
             }
         

@@ -29,7 +29,7 @@
 			map: map
 			});
 			map.setOptions({draggable: false, zoomControl: false, scrollwheel: false, disableDoubleClickZoom: false});
-			contentString[i] = '<div id="content">' + '<div id="siteNotice">' + '</div>' + '<h1 id="firstHeading" class="firstHeading">' + data[i].address + '</h1>' + '<div id="bodyContent">' + '<p><b>' + data[i].id + '</b>, also referred to as <b>Ayers Rock</b>, is a large ' + 'sandstone rock formation in the southern part of the ' + 'Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) ' + 'south west of the nearest large town, Alice Springs; 450&#160;km ';
+			contentString[i] = '<div id="content">' + '<div id="siteNotice">' + '</div>' + '<h1 id="firstHeading" class="firstHeading">' + data[i].address + '</h1>' + '<div id="bodyContent">' + '<p><b>' + data[i].id + '</b>,<b> ' + data[i].commits+'</b>,<b> ' + data[i].releases+'</b>' ;
 			infowindow[i] = new google.maps.InfoWindow({content: contentString[i]});
 			var mdl = marker[i];
 			google.maps.event.addListener(marker[i], 'mouseover', (function (mdl, i) {

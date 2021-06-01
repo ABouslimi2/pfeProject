@@ -82,4 +82,9 @@ retry_job:
 cancel_pipeline:
     path:       /Listpipelines/cancelpipeline/{id}/{idTeam}/{idpipe}
     controller: App\Controller\Admin\AdminController::cancelPipeline
+add_branch:
+    path:       /details/addBranch/{id}/{idTeam}
+    controller: App\Controller\Admin\AdminController::addBranch
+
+
 

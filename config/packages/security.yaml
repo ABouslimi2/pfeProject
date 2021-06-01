@@ -5,8 +5,8 @@ security:
             ldap:
                 service: Symfony\Component\Ldap\Ldap
                 base_dn: OU=Regional,DC=ad,DC=linedata,DC=com
-                search_dn: 'CN=SA_KenLDAP,OU=Service Accounts,OU=Global,DC=ad,DC=linedata,DC=com'
-                search_password: LDS@ken01
+                search_dn: 'CN=Amina Bouslimi,OU=Users,OU=Tunisia,OU=South Europe,OU=Regional,DC=ad,DC=linedata,DC=com'
+                search_password: Linedata11
                 uid_key: sAMAccountName
                 #extra_fields: ['dsqjdsqdhsqdsjq']
     
@@ -21,7 +21,7 @@ security:
                 login_path: login
                 check_path: login
                 service: Symfony\Component\Ldap\Ldap
-                dn_string: sAMAccountName={username},OU=Regional,DC=ad,DC=linedata,DC=com
+                dn_string: sAMAccountName={username},OU=Users,OU=Tunisia,OU=South Europe,OU=Regional,DC=ad,DC=linedata,DC=com
                 default_target_path: dashboard
                 csrf_token_generator: security.csrf.token_manager
     access_control:

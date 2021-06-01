@@ -24,6 +24,7 @@ class MapLDS
      */
     public $serverEndpoints;
     public $commits;
+    public $releases;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
