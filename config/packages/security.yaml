@@ -4,9 +4,10 @@ security:
         my_ldap:
             ldap:
                 service: Symfony\Component\Ldap\Ldap
-                base_dn: OU=Regional,DC=ad,DC=linedata,DC=com
-                search_dn: 'CN=Amina Bouslimi,OU=Users,OU=Tunisia,OU=South Europe,OU=Regional,DC=ad,DC=linedata,DC=com'
-                search_password: Linedata11
+                base_dn: DC=ad,DC=linedata,DC=com
+                search_dn: 'CN=SA_KenLDAP,OU=Service Accounts,OU=Global,DC=ad,DC=linedata,DC=com'
+                search_password: LDS@ken01
+                default_roles: ROLE_USER
                 uid_key: sAMAccountName
                 #extra_fields: ['dsqjdsqdhsqdsjq']
     
@@ -16,17 +17,20 @@ security:
             security: false
         main:
             anonymous: true
+            provider: my_ldap
             form_login_ldap:
             #http_basic_ldap:
                 login_path: login
                 check_path: login
                 service: Symfony\Component\Ldap\Ldap
-                dn_string: sAMAccountName={username},OU=Users,OU=Tunisia,OU=South Europe,OU=Regional,DC=ad,DC=linedata,DC=com
-                default_target_path: dashboard
-                csrf_token_generator: security.csrf.token_manager
+                dn_string: DC=ad,DC=linedata,DC=com
+                query_string: '(&(objectCategory=person)(objectClass=user)(sAMAccountName="{username}"))'
+                search_dn: 'CN=SA_KenLDAP,OU=Service Accounts,OU=Global,DC=ad,DC=linedata,DC=com'
+                search_password: 'LDS@ken01'
+                default_target_path: AdminDashboard
     access_control:
-        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/AdminDashboard, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         #- { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/login, roles: ROLE_USER }        
+        - { path: ^/AdminDashboard, roles: ROLE_USER }        
 
  

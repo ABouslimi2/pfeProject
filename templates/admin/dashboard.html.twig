@@ -29,7 +29,7 @@
 			map: map
 			});
 			map.setOptions({draggable: false, zoomControl: false, scrollwheel: false, disableDoubleClickZoom: false});
-			contentString[i] = '<div id="content">' + '<div id="siteNotice">' + '</div>' + '<h1 id="firstHeading" class="firstHeading">' + data[i].address + '</h1>' + '<div id="bodyContent">' + '<p><b>' + data[i].id + '</b>,<b> ' + data[i].commits+'</b>,<b> ' + data[i].releases+'</b>' ;
+			contentString[i] = '<div id="content">' + '<div id="siteNotice">' + '</div>' + '<h1 id="firstHeading" class="firstHeading">' + data[i].address + '</h1>' + '<div id="bodyContent">' + '<p><b>' + data[i].teamName + '</b></br><b> <img src="{{asset('assets/images/commit.png') }}"/> Commits Number : ' + data[i].commits+'</b></br><b><img src="{{asset('assets/images/rel.png') }}"/> Releases Number : ' + data[i].releases+'</b></br><b><i class="fa fa-code-fork" aria-hidden="true"></i> Merge Requests Number : '+data[i].merges+'</b>' ;
 			infowindow[i] = new google.maps.InfoWindow({content: contentString[i]});
 			var mdl = marker[i];
 			google.maps.event.addListener(marker[i], 'mouseover', (function (mdl, i) {
@@ -392,6 +392,8 @@
 				// $(".addItemTeam").load(" .addItemTeam");
 				$('#basicModal').modal('toggle');
 				$('.modal-backdrop.fade.show').hide();
+				toastr.success('Team created successfuly.', 'CREATED', {timeOut: 5000})
+
 				}
 			});
 		}

@@ -84,15 +84,15 @@
                             </div>
                         </div>
             </div>
-            <!-- div class="col-lg-6">
+          
                         <div class="card">
                             <div class="card-body"><div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
                                 <h4 class="card-title">Bar chart</h4>
                                 <canvas id="barChart" width="416" height="124" style="display: block; width: 416px; height: 124px;" class="chartjs-render-monitor"></canvas>
                             </div>
                         </div>
-                    </div>
-            </div -->
+                   
+            
             
             <!-- #/ container -->
         </div>
@@ -282,8 +282,11 @@ $(".searchDash").on("keyup", function() {
         options: {
             scales: {
                 yAxes: [{
-                    ticks: {
-                        beginAtZero: true
+                   ticks: {
+                        beginAtZero: true,
+                         suggestedMin: 0,
+                           // suggestedMax: 1000,
+                            stepSize: 50
                     }
                 }],
                 xAxes: [{

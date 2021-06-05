@@ -34,19 +34,19 @@ class UpdateDataBaseCommand extends Command
      */
     private $serverEndpointRep;
 
-    public CallApiService $callApiService;
+    public CallApiService $callapiservice;
     
     
     protected static $defaultName = 'app:UpdateDataBase';
     //protected static $defaultDescription = 'Add a short description for your command';
     
     public function __construct(EntityManagerInterface $em, MercureNotificationsRepository $mercureNotificationsRep,
-    ServerEndpointRepository  $serverEndpointRep, CallApiService $callApiService)
+    ServerEndpointRepository  $serverEndpointRep, CallApiService $callapiservice)
     {
         $this->em = $em;
         $this->mercureNotificationsRep = $mercureNotificationsRep;
         $this -> serverEndpointRep = $serverEndpointRep;
-        $this->callApiService = $callApiService;
+        $this->callapiservice = $callapiservice;
         
         parent::__construct();
     }

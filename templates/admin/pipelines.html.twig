@@ -265,5 +265,20 @@
             </div>
            </div>
         </div>
+<script>
+	setInterval("my_function();",20000); 
+	function my_function(){
+	
+	$.ajax({ 
+    type: 'get',
+    url: "{{ path('show_teams') }}",
+	//data: {x , y},
+    success: function(data, response){
+		$(".tab-content").load(" .tab-content");
+
+	}
+}); 
+}
 		
+</script>	
 {% endblock %}

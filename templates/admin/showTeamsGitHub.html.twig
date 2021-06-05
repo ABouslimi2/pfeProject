@@ -299,6 +299,8 @@ $(document).ready(function () {
 			    $(".addItemTeam").load(" .addItemTeam");
 				$('#basicModal').modal('toggle');
 				$('.modal-backdrop.fade.show').hide();
+				toastr.success('Team created successfuly.', 'CREATED', {timeOut: 5000})
+
 				}
 		});
 		}
@@ -316,6 +318,8 @@ $(document).ready(function () {
 				$('.modal-backdrop.fade.show').hide();
 				//$this.closest('.gtilab-team-bloc').remove();
 				$(".addItemTeam").load(" .addItemTeam");
+				toastr.error('Team deleted successfuly.', 'DELETED', {timeOut: 5000})
+
 				}	
 		});
 	});
@@ -339,6 +343,8 @@ $(document).ready(function () {
 				$('.modal-backdrop.fade.show').hide();
 				//$this.closest('.gtilab-team-bloc').remove();
 				$(".addItemTeam").load(" .addItemTeam");
+				toastr.info('Team edited successfuly.', 'EDITED', {timeOut: 5000})
+
 				}	
 		});
 		

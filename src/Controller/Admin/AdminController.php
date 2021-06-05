@@ -454,30 +454,21 @@ class AdminController extends AbstractController
         ]);
     }
 
-    public function addBranch(int $id, CallApiService $callapiservice, Request $request,$idTeam, ServerEndpointRepository $sp): Response
-    {
-        $team = $sp ->find($idTeam);
-        $url = $team -> getGitlabURL();
-        $token = $team -> getToken();
-        $branches=$callapiservice -> GetProjectBranches($id,$url,$token);
-       
-        if ($request->getMethod() == 'POST') {
-            $createdFromB = $request->get('inputVariableB');
-            $newBranchName = $request->get('newB');
-
-            $callapiservice->postBranch($id,$createdFromB,$newBranchName,$url,$token);
-                
-            return $this -> json([
-                'branches' => $branches,
-               
-            ], 200);
-               
-        }
-        return $this -> json([
-            'branches' => $branches,
-        ], 200);
-            
-    }
+    public function addBranch(int $id, CallApiService $callapiservice, Request $request,$idTeam, ServerEndpointRepository $sp): Response 
+    {        
+         $team = $sp ->find($idTeam);     
+             $url = $team -> getGitlabURL();    
+                  $token = $team -> getToken();   
+                       // $branches=$callapiservice -> GetProjectBranches($id,$url,$token);   
+                                     if ($request->getMethod() == 'POST') {     
+                                        $createdFromB = $request->get('inputVariableB');          
+                                           $newBranchName = $request->get('newB');      
+                                                   $callapiservice->postBranch($id,$createdFromB,$newBranchName,$url,$token);  
+                                                               return $this -> json([     
+                                                                  ], 200);                 
+                                        }        
+                                         return $this -> json([       
+                                              ], 200);                  }
 
   
 

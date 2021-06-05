@@ -85,7 +85,7 @@
                 </div>
                  </div>
                 </div>
-                <div class="tab-pane fade" id="profile1">
+                <div class="tab-pane fade branchReload" id="profile1">
                     <div class="p-t-15">
                     <div class="col-lg-12">
                         <div class="card">
@@ -102,7 +102,7 @@
                                          New branch
 					                <i class="fa fa-plus" aria-hidden="true"></i>
 				                    </button>
-                                <form name="form" id="formAdd" name="formAdd" action="{{ path('add_branch', { 'id': data.id , 'idTeam': team.id }) }}" method="POST" > 
+                                <form id="formAdd" name="formAdd" action="{{ path('add_branch', { 'id': data.id , 'idTeam': team.id }) }}" method="POST" > 
                                    <div class="modal fade" id="basicModal" style="display: none;" aria-hidden="true">
 					<div class="modal-dialog" role="document">
                                             <div class="modal-content">
@@ -124,11 +124,14 @@
 					<div id="BranchNameExist" style="display: none;"><p style="color:red;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					branch name already exists !</b></p></div>
                                                 </div>
+                                                <input type="hidden" id="teamIdAjax" value="{{team.id}}"> 
+    <input type="hidden" id="projectIdAjax" value="{{data.id}}">
+
                 									<div class="form-row">
                     									<div class="form-group col-md-4">
 															<label>Create From : </label>
                                         				<select name="inputVariableB" class="form-control">
-                                                        <option selected="selected">Choose...</option>
+                                                        
 
                                                         {% for bb in branches %}
                                                          <option value={{ bb.name }} >{{ bb.name }}</option>
@@ -143,7 +146,7 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-danger">Add</button>
+                                                    <button type="button" data-href="{{ path('add_branch', { 'id': data.id , 'idTeam': team.id }) }}" class="btn btn-danger addBtn">Add</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -157,8 +160,8 @@
                             {% for b in branches %}
                             <table>
                             <tr>
-                            <td><h4 class="card-title">{{b.name}}</h4> </td>
-                            {% if b.merged == false %} 
+                            <td><h4 class="card-title"><img src="{{asset('assets/images/branche.png') }}"/> {{b.name}}</h4> </td>
+                            {% if b.merged == true %} 
                                <td> <span class="badge badge-danger px-2"> Merged</span></td>
                                 {% endif %}
                             </tr>
@@ -172,13 +175,10 @@
                                         <div class="media-body">
                                             <div class="row">
                                                 <div class="col-lg-5">
-                                                    <h5>{{b.commit.author_name}}</h5>
-                                                    <p>{{b.commit.author_email}}</p>
+                                                    
+                                                    <p>{{b.commit.title}}</p>
                                                 </div>
-                                                <div class="col-lg-5">
-                                                    <h5>{{b.commit.title}}</h5>
-                                                    <p class="text-muted f-s-14">{{b.commit.message}}</p>
-                                                </div>
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -239,7 +239,7 @@
                             <div class="card-body">
                             <div class="input-group icons">
                         
-                        <input type="search" class="form-control" placeholder="Search Dashboard" aria-label="Search Dashboard">
+                        <input type="search" class="form-control searchMerge" placeholder="Search Dashboard" aria-label="Search Dashboard">
                         <div class="drop-down   d-md-none">
 							<form action="#">
 								<input type="text" class="form-control" placeholder="Search">
@@ -253,7 +253,7 @@
                      </br>
                                 <h4 class="card-title">Merge Requests Table</h4>
                                 <div class="table-responsive">
-                                    <table class="table header-border">
+                                    <table class="table header-border tableMerge">
                                         <thead>
                                             <tr>   
                                                 <th scope="col">Title</th>
@@ -806,48 +806,69 @@ var ctx = document.getElementById("doughutChart");
            }
 
 </script>
-<script type="text/javascript">
+<script type="text/javascript"> 
         
-
 $(document).ready(function () {
-	$('.addBtn').on('click', function(e) {
+ $('.addBtn').on('click', function(e) {
         e.preventDefault();
-		var myNewB = document.getElementById("myNewB").value;
-		var data = $('#formAdd').serialize();
-		var url = $(this).data('href');
-		
-		var aaa = {{ nameBranche | raw}}
-		const b = aaa.map(name => name.toUpperCase());
-		//teamURLs
-		
+  var myNewB = document.getElementById("myNewB").value;
+  var data = $('#formAdd').serialize();
+  var url = $(this).data('href');
+  
+  var aaa = {{ nameBranche | raw}}
+  const b = aaa.map(name => name.toUpperCase());
+  //teamURLs
+  
+   if ( b.includes(myNewB.toUpperCase()))
+    { 
+     $('#BranchNameExist').show(); 
+     $('#BranchNameExist').delay(3000).hide(1);
+    } 
+   else if (myNewB == ""){
+    $('#requiredNameB').show();
+     $('#requiredNameB').delay(3000).hide(1);
+    }
+     
+  else {
+  
+  $.ajax({
+   type: 'post',
+   url: url,
+   data: data,
+    success: function (data, response) {
+     console.log(data.branches);
+    //$(".addItemTeam").load(location.href + " .addItemTeam");
+       $(".addItemBranch").load(" .addItemBranch");
+    $('#basicModal').modal('toggle');
+    $('.modal-backdrop.fade.show').hide();
+    toastr.success('Branch created successfuly.', 'CREATED', {timeOut: 5000})
 
-			if ( b.includes(myNewB.toUpperCase()))
-				{ 
-					$('#BranchNameExist').show(); 
-					$('#BranchNameExist').delay(3000).hide(1);
-				} 
-	
-		 else if (myNewB == ""){
-		  $('#requiredNameB').show();
-		   $('#requiredNameB').delay(3000).hide(1);
-  		}
-		   
-		else {
-		
-		$.ajax({
-			type: 'post',
-			url: url,
-			data: data,
-				success: function (data, response) {
-					console.log(data.branches);
-				//$(".addItemTeam").load(location.href + " .addItemTeam");
-			    $(".addItemBranch").load(" .addItemBranch");
-				$('#basicModal').modal('toggle');
-				$('.modal-backdrop.fade.show').hide();
-				}
-		});
-		}
-	});
+    }
+  });
+  }
+ });
+    });
     </script>
+<script>
+$(".searchMerge").on("keyup", function() {
+    var value = $(this).val().toUpperCase();
+
+    $(".tableMerge tr").each(function(index) {
+        if (index !== 0) {
+
+            $row = $(this);
+
+            var id = $row.find("td:eq(5) span").text().toUpperCase();
+
+            if (id.indexOf(value) !== 0) {
+                $row.hide();
+            }
+            else {
+                $row.show();
+            }
+        }
+    });
+});
+</script>
 {% endblock %}
 

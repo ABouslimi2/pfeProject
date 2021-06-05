@@ -25,6 +25,8 @@ class MapLDS
     public $serverEndpoints;
     public $commits;
     public $releases;
+    public $merges;
+    public $teamName;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */

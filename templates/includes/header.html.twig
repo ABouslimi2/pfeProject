@@ -40,7 +40,7 @@
         <!--**********************************
             Header start
         ***********************************-->
-        <div class="header">    
+        <div class="header addItemTeamNotif">    
             <div class="header-content clearfix">
                 
                 <div class="nav-control">
@@ -54,13 +54,13 @@
                             <span class="input-group-text bg-transparent border-0 pr-2 pr-sm-3" id="basic-addon1"><i class="mdi mdi-magnify"></i></span>
                         </div>
                         <input type="search" class="form-control searchDash" placeholder="Search Dashboard" aria-label="Search Dashboard">
-                        
+                    <!--  Houni kenet fama div fi west'ha form fi westha input fasakhhom -->
                     </div>
                 </div>
                 <div class="header-right">
                     <ul class="clearfix">
                         <li class="icons dropdown"><a href="javascript:void(0)" class="notiff" data-toggle="dropdown">
-                                <i class="mdi mdi-bell-outline"></i>
+                                <i class="mdi mdi-bell-outline na9ouz"></i>
                                 <span class="badge badge-pill gradient-2 badge-primary nbNotif"></span>
                             </a>
                             <div class="drop-down animated fadeIn dropdown-menu dropdown-notfication">
@@ -69,16 +69,8 @@
                                     
                                 </div>
                                 <div class="dropdown-content-body">
-                                    <ul>
-                                        <li>
-                                            <a href="javascript:void()">
-                                                <span class="mr-3 avatar-icon bg-success-lighten-2"><i class="icon-present"></i></span>
-                                                <div class="notification-content">
-                                                    <h6 class="notification-heading">Events near you</h6>
-                                                    <span class="notification-text">Within next 5 days</span> 
-                                                </div>
-                                            </a>
-                                        </li>
+                                    <ul id="listNotif">
+                                        
                                         
                                     </ul>
                                     
@@ -153,23 +145,118 @@
         <!--**********************************
             Sidebar end
         ***********************************-->
+<script>
+$(document).ready(function(){
+    var list = document.getElementById("listNotif");
+$.ajax({ 
+    type: 'get',
+    url: "{{ path('getNotif') }}",
+    success: function(data, response){
+        console.log(data);
+        console.log(data.notificationss);
+      for (let count = 0 ; count < data.notificationss.length ; count++){
+          var d = data.notificationss[count].DateNotif/*,*/;
+ 
+        var newElement = document.createElement('LI');
+        newElement.innerHTML= '<a href="javascript:void()">'+
+                             '<span class="mr-3 avatar-icon bg-success-lighten-2">'+'<i class="icon-present">'+'</i>'+'</span>'+
+                             '<div class="notification-content">'+
+                             '<h6 class="notification-heading">'+data.notificationss[count].Contenu+'</h6>'+
+                             '<span class="notification-text">'+d+'</span>'+
+                             '</div>'+
+                             '</a>';
+        list.appendChild(newElement);
+     } }
+          
+   });
 
-    
- <script>
-
+});
+</script>
+<script>
  var nbNotifications = 0 ;
- //$('.notiff').click( function(e) { nbNotifications=0; $('.nbNotif').text(''); return false; } );
+ const url = new URL('http://localhost:3000/.well-known/mercure');
+url.searchParams.append('topic', '/release');
+// Subscribe to updates of several Book resources
+url.searchParams.append('topic', '/mergeReq');
+// All Review resources will match this pattern
+url.searchParams.append('topic', '/commit');
 
-	const eventSource = new EventSource('http://localhost:3000/.well-known/mercure?topic=' 
-	+ encodeURIComponent('/release'));
+	const eventSource = new EventSource(url);
+
 	eventSource.onmessage = event => {
+
+        var currentdate = new Date(); 
+var datetime = currentdate.getDate() + "-"
+                + (currentdate.getMonth()+1)  + "-" 
+                + currentdate.getFullYear() + "  "  
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
         var obj = JSON.parse(event.data);
+console.log(obj);
+       var list = document.getElementById("listNotif");
+         var newElement = document.createElement('LI');
+        newElement.innerHTML= '<a href="javascript:void()">'+
+                             '<span class="mr-3 avatar-icon bg-success-lighten-2">'+'<i class="icon-present">'+'</i>'+'</span>'+
+                             '<div class="notification-content">'+
+                             '<h6 class="notification-heading">'+'New '+obj.action+'  in project with id : '+obj.project+' in team  : '+obj.server+'</h6>'+
+                             '<span class="notification-text">'+datetime+'</span>'+
+                             '</div>'+
+                             '</a>';
+        list.prepend(newElement);
+          list.removeChild(list.lastChild);
+
     nbNotifications = nbNotifications +1;
     $('.nbNotif').text(nbNotifications);
-    $('.notification-heading').text('Project '+ obj.projectName + ' with id '+obj.project+' that belongs to '+obj.team+' with server url '
-    +obj.server+' has new '+obj.action);
-     $('.notification-text').text('Number of '+obj.action+' becomes '+obj.nbRelease);
-    
+    $('.na9ouz').click(function() {
+            $('.nbNotif').text('');
+            nbNotifications = 0 ;
+        return false;
+    });
+        var lat = obj.lat;
+		var long = obj.long;
+		var latlng = new google.maps.LatLng(lat, long);
+
+			var marker = new google.maps.Marker({
+				position: latlng,
+				map: map
+			});
+			marker.info = new google.maps.InfoWindow({
+			content: '<p>'+'<b>NEW'+obj.action+' !!!!!!!!!!!!!!!!!     </b>'+'</p>'
+			});
+			google.maps.event.addListener(marker, 'click', function() {
+				marker.info.open(map, marker);
+			});
+			new google.maps.event.trigger( marker, 'click' );
+			
+			 google.maps.event.addListener(marker, 'click', function() {
+				marker.info.close(map, marker);
+			});
+          
+           function waiting() {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        resolve(new google.maps.event.trigger( marker, 'click' ));
+                    }, 5000);
+                })
+            }
+
+        waiting().then(() => {
+
+           google.maps.event.clearListeners(marker, 'click');
+           // initMap();
+            marker.info = new google.maps.InfoWindow({
+			content: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+			});
+            google.maps.event.addListener(marker, 'mouseover', function() {
+				marker.info.open(map, marker);
+			});
+            google.maps.event.addListener(marker, 'mouseout', function() {
+				marker.info.close(map, marker);
+			});
+     });
+            
+        
     console.log(JSON.parse(event.data));
 }
 </script>
