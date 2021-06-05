@@ -84,12 +84,11 @@
 													<th scope="col">Status</th>
 													<th scope="col">Pipeline</th>
 													<th scope="col">Refrence</th>
-													<th scope="col">Action</th>
 													<th scope="col">Created At</th>
 													<th scope="col">Updated At</th>
 
 													<th scope="col">Jobs</th>
-													
+													<th scope="col">Action</th>
 												</tr>
 											</thead>
 											<tbody>
@@ -114,15 +113,10 @@
 																<button style="height:35px;width:100px" type="button" class="btn mb-1 btn-rounded btn-outline-info">
 																	<i class="fa fa-spinner"></i>
 																	Running</button>
-															{% elseif  (p.status == "pending") %}
+															{% elseif  p.status == "pending" %}
 																<button style="height:35px;width:100px" type="button" class="btn mb-1 btn-rounded btn-outline-info">
 																	<i class="fa fa-pause-circle-o"></i>
 																	Pending</button>
-															
-															{% elseif  (p.status == "created") %}
-																<button style="height:35px;width:100px" type="button" class="btn mb-1 btn-rounded btn-outline-info">
-																	<i class="fa fa-pause-circle-o"></i>
-																	Created</button>
 															{% else %}
 																<button style="height:35px;width:100px" type="button" class="btn mb-1 btn-rounded btn-outline-info">
 																	<i class="fa fa-pause-circle-o"></i>
@@ -138,16 +132,6 @@
 															<img src="{{asset('assets/images/branche.png') }}"/>
 															{{ p.ref }}
 														</td>
-														 <td>
- 
-															{%  if (p.status == "failed") or (p.status == "canceled") or (p.status == "skipped") %}
-															
-															<a href="{{ path('retry_pipelines', { 'id': data.id, 'idTeam': team.id  ,'idpipe' : p.id }) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="Retry" style="background-color: white;border-color:red;text-color:black;" type="button" class="btn"><i class="fa fa-repeat" aria-hidden="true"></i></a>
-															{% elseif (p.status == "running") %}
-															<a href="{{ path('cancel_pipeline', { 'id': data.id, 'idTeam': team.id  ,'idpipe' : p.id }) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="Cancel" style="background-color: white;border-color:red;text-color:black;" type="button" class="btn"><i class="fa fa-ban" aria-hidden="true"></i></a>
-
-															{% endif %}
-                                            </td>
 														<td style="width: 15%; text-align: right;">
 															<i class="mdi mdi-calendar-check"></i>
 															{{ p.created_at | date('d/m/Y') }}
@@ -165,7 +149,13 @@
 
 
 														<td>
-															
+															<div  class="btn-group" role="group" aria-label="Basic example">
+  															<div class="btn-group" role="group">
+															<div class="dropdown">
+															<button class="btn dropdown-toggle" style="background-color: white;border-color:red;text-color:black;" type="button" id="dropdownMenuButton" data-toggle="dropdown" data-placement="top" title="" data-original-title="Run manuel or delayed jobs " aria-haspopup="true" aria-expanded="false">
+		 															<i class="fa fa-play" aria-hidden="true"></i>
+																</button>
+															<div style="width:auto;height:auto;" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 															
 															
 															{% for job in jobs | sort((a, b) => a.created_at <=> b.created_at) %}
@@ -176,46 +166,12 @@
 																	<p style="color:black;">{{job.name}} <p>
 																</div>
 																<div class="col-sm-4 pull-right">
-																
-																
-{% if job.name == 'Deploy_QA' %}
-																<button data-toggle="modal" data-target=".bd-example-modal-sm" style="background-color: white;border-color:red;text-color:black;" type="button" class="btn"><i class="fa fa-play" aria-hidden="true"></i></button>
-																
-<div class="bootstrap-modal">
-  <!-- Small modal -->
-                                    
-                                    <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
-                                        <div class="modal-dialog modal-sm">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Play Job Deploy QA </h5>
-                                                    <button type="button" class="close" data-dismiss="modal"><span>×</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
+																{% if job.name == 'Deploy_QA' %}
 
-												<form name="form" action="" method="POST" >   
-                									<div class="form-row">
-                    									<div class="form-group col-md-4">
-															<label>QA Instance</label>
-                                        					<select name="inputVariableQA" class="form-control" style="width:250px;">
-                                            						<option selected="selected" value="09" >QA9</option>
-                                              						<option value="10" >QA10</option>
-                                               						<option value="11" >QA11</option>
-                                                					<option value="12" >QA12</option>
-                                                    		</select>
-														 </div>                                    
-													 </div>
-            									</form>
-												</div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                                                    <a href="{{ path('play_job', { 'id': data.id ,'idTeam': team.id , 'idjob':job.id }) }}" type="button" class="btn btn-danger">Play</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+																<button  data-href="{{ path('play_job', { 'id':data.id, 'idTeam': team.id, 'idjob':job.id}) }}" data-toggle="modal" data-target=".bd-example-modal-sm" style="background-color: white;border-color:red;text-color:black;" type="button" class="btn btnBtn"><i class="fa fa-play" aria-hidden="true"></i></button>
+													
+			
+								
 	{% elseif  job.name == 'Deploy_Preprod' %}
 		<a href="{{ path('play_job', { 'id': data.id, 'idTeam': team.id  ,'idjob' : job.id }) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="Play" style="background-color: white;border-color:red;text-color:black;" type="button" class="btn"><i class="fa fa-play" aria-hidden="true"></i></a>
 										
@@ -225,10 +181,22 @@
 
 																{% endif %}
 															{% endfor %}
+																
+
+															
+
 															
 														</td>
-														
-											
+														 <td>
+ 
+															{%  if (p.status == "failed") or (p.status == "canceled") or (p.status == "skipped") %}
+															
+															<a href="{{ path('retry_pipelines', { 'id': data.id, 'idTeam': team.id  ,'idpipe' : p.id }) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="Retry" style="background-color: white;border-color:red;text-color:black;" type="button" class="btn"><i class="fa fa-repeat" aria-hidden="true"></i></a>
+															{% elseif (p.status == "running") %}
+															<a href="{{ path('cancel_pipeline', { 'id': data.id, 'idTeam': team.id  ,'idpipe' : p.id }) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="Cancel" style="background-color: white;border-color:red;text-color:black;" type="button" class="btn"><i class="fa fa-ban" aria-hidden="true"></i></a>
+
+															{% endif %}
+                                            </td>
 													</tr>
 												{% endfor %}
 											</tbody>
@@ -259,26 +227,68 @@
 
 	</div>
 </div></div></div>
+<div class="bootstrap-modal">                                    
+                                    <div class="modal fade bd-example-modal-sm" id="basicModal" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+                                        <div class="modal-dialog modal-sm">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Play Job Deploy QA </h5>
+                                                    <button type="button" class="close" data-dismiss="modal"><span>×</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
 
+												<form name="form" id="formJob" method="POST" >   
+                									<div class="form-row">
+                    									<div class="form-group col-md-4">
+															<label>QA Instance</label>
+                                        					<select name="inputVariableQA" class="form-control country" style="width:250px;">
+                                            						<option selected="selected" value="09" >QA9</option>
+                                              						<option value="10" >QA10</option>
+                                               						<option value="11" >QA11</option>
+                                                					<option value="12" >QA12</option>
+                                                    		</select>
+														 </div>                                    
+													 </div>
+            									</form>
+												</div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-danger btnBtnPlay">Play</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
 <!-- end pipelines****************************************************************************-->
             </div>
            </div>
         </div>
-<script>
-	setInterval("my_function();",20000); 
-	function my_function(){
-	
-	$.ajax({ 
-    type: 'get',
-    url: "{{ path('show_teams') }}",
-	//data: {x , y},
-    success: function(data, response){
-		$(".tab-content").load(" .tab-content");
 
-	}
-}); 
-}
+<script>
+$(document).ready(function () {
+	$('.btnBtn').on('click', function() {
+		//var data = $('#formAdd').serialize();
+		var url = $(this).data('href');
 		
-</script>	
+			//var data = $('#formAdd').serialize();
+		//	console.log ('1'+url);
+			//console.log ('2'+selectedCountry);
+			$('.btnBtnPlay').on('click', function() {
+	$.ajax({
+			type: 'post',
+			url: url,
+			//data: data,
+				success: function (data, response) {	
+					$(".tab-content").load(" .tab-content");
+					$('#basicModal').modal('toggle');
+					$('.modal-backdrop.fade.show').hide();			
+				toastr.success('Job mchee za3ma !', 'CREATED', {timeOut: 5000})
+				}
+});
+	});
+});
+});		
+</script>		
 {% endblock %}

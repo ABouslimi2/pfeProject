@@ -131,7 +131,7 @@ class CallApiService
     {
         $response = $this->client->request (
             'GET',
-            $url.'/api/v4/projects/'.$id.'/pipelines?access_token='.$token
+            $url.'/api/v4/projects/'.$id.'/pipelines?access_token='.$token.'&per_page=100'
         );
     
       return $response->toArray();
@@ -141,7 +141,7 @@ class CallApiService
     {
         $response = $this->client->request (
             'GET',
-            $url.'/api/v4/projects/'.$id.'/jobs?access_token='.$token
+            $url.'/api/v4/projects/'.$id.'/jobs?access_token='.$token.'&per_page=1000'
         );
     
       return $response->toArray();

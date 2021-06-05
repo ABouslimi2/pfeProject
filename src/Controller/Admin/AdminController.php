@@ -269,26 +269,31 @@ class AdminController extends AbstractController
     PaginatorInterface $paginator,$idTeam, ServerEndpointRepository $sp):Response
     
     {
-        $team = $sp ->find($idTeam);
-        $url = $team -> getGitlabURL();
-        $token = $team -> getToken();
-         $callapiservice -> playJob($id,$idjob,$url,$token);
-         $pipes = $callapiservice -> GetProjectPipelines($id,$url,$token);
+       // if ($request->getMethod() == 'POST') {
+          //  $user = $request->get('user');
+            $team = $sp ->find($idTeam);
+            $url = $team -> getGitlabURL();
+            $token = $team -> getToken();
+            $callapiservice -> playJob($id, $idjob, $url, $token);
+            $pipes = $callapiservice -> GetProjectPipelines($id, $url, $token);
 
-         $pipess = $paginator->paginate(
-             $pipes, /* query NOT result */
+            $pipess = $paginator->paginate(
+                $pipes, /* query NOT result */
              $request->query->getInt('page', 1)/*page number*/,
-             10/*limit per page*/
-         );
-       //  return $this-> redirectToRoute(())
-        return $this->render("admin/pipelines.html.twig", [
-            'data' => $callapiservice -> GetGitLabOneProject($id,$url,$token),
+                10/*limit per page*/
+            );
+            return $this -> json([
+            ], 200); 
+            //  return $this-> redirectToRoute(())
+      /*  return $this->render("admin/pipelines.html.twig", [
+            'data' => $callapiservice -> GetGitLabOneProject($id, $url, $token),
 
-            'pipelines' => $callapiservice -> GetProjectPipelines($id,$url,$token),
-            'jobs' => $callapiservice -> GetPipelineJobs($id,$url,$token),
+            'pipelines' => $callapiservice -> GetProjectPipelines($id, $url, $token),
+            'jobs' => $callapiservice -> GetPipelineJobs($id, $url, $token),
             'pipess' => $pipess,
             'team' => $team
-        ]);
+        ]);*/
+  //  }
     }
 
    

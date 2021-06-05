@@ -39,5 +39,5 @@ services:
                 port: 636
                 #encryption: tls
                 options:
-                    #protocol_version: 3
+                    protocol_version: 3
                     referrals: false
