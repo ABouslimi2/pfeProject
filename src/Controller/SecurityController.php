@@ -69,8 +69,8 @@ class SecurityController extends AbstractController
         
                 //var_dump($info);die;
                 $passwordRetryCount=$info[0]['badpwdcount'][0];
-                var_dump($info);
-                die;
+                //var_dump($info);
+                //;
         
                 //if($info[0]['badpwdcount'][0]==0){
                 //  var_dump($info[0]['badpwdcount']);die('test');

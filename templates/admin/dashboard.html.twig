@@ -9,10 +9,10 @@
 	function initMap() {
 		map = new google.maps.Map(document.getElementById('map'), {
 		center: {
-			lat: 36.862499,
-			lng: 10.195556
+			lat: 43.296482,
+			lng: 5.36978
 		},
-			zoom: 3.15
+			zoom: 3
 	});	
 
 	var marker = [];
@@ -63,7 +63,7 @@
 		</div>
 		<style>
 			.multiselect {
-				width: 200px;
+				width: 300px;
 			}
 
 			.selectBox {
@@ -188,21 +188,23 @@
 							<select>
 								<option>Select Git Server URL </option>
 							</select>
+						
 							<div class="overSelect"></div>
 						</div>
 						<div id="checkboxes">
 
 							{% for team in teams %}
+							{% if 'Gitlab' == team.gitType %}
 								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
 								<input type="checkbox" class="form-check-input ids" value="{{team.gitlabURL}}" name="ids[]" id="isSelected">{{team.gitlabURL}}</br>
-
+							{% endif %}
 						{%  endfor %}
 
 					</div>
 				</td>
 				<td>
-					<button id="checkCheckbox" class="likeLink">
+						<button id="checkCheckbox" class="likeLink">
 						<i class="fa fa-search" aria-hidden="true"></i>&nbsp;&nbsp;Search
 					</button>
 				</td>

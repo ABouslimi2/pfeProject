@@ -78,5 +78,15 @@ class ServiceGitHub
 
         return $response->toArray();
     }
+    public function GetGitHubReleases($owner,$name,$url,$token):array
+    {
+        $response = $this->client->request(
+            'GET',
+            $url.'/repos/'.$owner.'/'.$name.'/releases?access_token='.$token.'&per_page=100'
+        );
+        
+
+        return $response->toArray();
+    }
 
 }

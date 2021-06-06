@@ -13,17 +13,19 @@ use Symfony\Component\Mercure\Update;
 use App\Repository\NotificationRepository;
 use Symfony\Component\Mercure\HubInterface;
 use App\Repository\ServerEndpointRepository;
+use App\Service\ServiceGitHub;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class DashboardController extends AbstractController
 {
        /**
      * @Route("/AdminDashboard", name="AdminDashboard")
      */
-    public function index(CallApiService $callapiservice, ServerEndpointRepository $sp,MapLDSRepository $mapRep ,Request $request): Response
+    public function index(CallApiService $callapiservice,ServiceGitHub $serviceGitHub, ServerEndpointRepository $sp,MapLDSRepository $mapRep ,Request $request): Response
     {
 
       // dd($this->security->getUser());
@@ -36,7 +38,7 @@ class DashboardController extends AbstractController
         $projects = [];
         $commitNumber = 0 ;
         $mergesNumber = 0 ;
-
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
         $releasesNumber = 0 ;
         $em = $this->getDoctrine()->getManager();
         $teams = $em->getRepository('App\Entity\ServerEndpoint')->findAll();
@@ -44,46 +46,64 @@ class DashboardController extends AbstractController
        // dd($notificationss);
        // $teams =  $sp -> findTeamByType($type);
         foreach ($teams as $team) {
-           
-            foreach ($locations as $loc) {
-                 if ($team -> getMap() == $loc) {
-                      
+            if ($team -> getGitType() == 'Gitlab') {
+                foreach ($locations as $loc) {
+                    if ($team -> getMap() == $loc) {
                         $projects= $callapiservice -> GetGitLabProjects($team-> getGitlabURL(), $team -> getToken());
                         foreach ($projects as $proj) {
                             $commitNumber = $commitNumber + count($callapiservice -> GetProjectCommits($proj['id'], $team -> getGitlabURL(), $team -> getToken()));
                             $releasesNumber = $releasesNumber + count($callapiservice -> GetProjectReleases($proj['id'], $team -> getGitlabURL(), $team -> getToken()));
                             $mergesNumber = $mergesNumber + count($callapiservice -> GetProjectMergeReq($proj['id'], $team -> getGitlabURL(), $team -> getToken()));
-
-                        }                   
-                         $loc->commits = $commitNumber;
+                        }
+                        $loc->commits = $commitNumber;
                         $loc->releases = $releasesNumber;
                         $loc->merges = $mergesNumber;
-                         $loc->teamName = $team -> getTeam();
-                         $mergesNumber=0;
+                        $loc->teamName = $team -> getTeam();
+                        $mergesNumber=0;
 
                         $releasesNumber = 0 ;
-                         $commitNumber = 0 ;
+                        $commitNumber = 0 ;
+                    }
+                }
+            } elseif ($team -> getGitType() == 'Github') {
+                foreach ($locations as $loc) {
+                    if ($team -> getMap() == $loc) {
+                        $projects= $serviceGitHub -> GetGitHubRepos($team-> getGitlabURL(), $team -> getToken());
+                        foreach ($projects as $proj) {
+                        //var_dump($proj['owner']['login']);
+                         //   die();
+                            $commitNumber = $commitNumber + count($serviceGitHub -> GetGitHubCommits($proj['owner']['login'], $proj['name'], $team -> getGitlabURL(), $team -> getToken()));
+                            $releasesNumber = $releasesNumber + count($serviceGitHub -> GetGitHubReleases($proj['owner']['login'], $proj['name'], $team -> getGitlabURL(), $team -> getToken()));
+                            //$mergesNumber = $mergesNumber + count($serviceGitHub -> GetGitHubReleases($proj['id'], $team -> getGitlabURL(), $team -> getToken()));
+                        }
+                        $loc->commits = $commitNumber;
+                        $loc->releases = $releasesNumber;
+                        // $loc->merges = $mergesNumber;
+                        $loc->teamName = $team -> getTeam();
+                        // $mergesNumber=0;
+
+                        $releasesNumber = 0 ;
+                        $commitNumber = 0 ;
+                    }
                 }
             }
-        
-        } 
-        
-        foreach ($teams as $name){
-            array_push($teamsName,$name->getTeam());
-            array_push($teamsURL,$name ->getGitlabURL());
         }
+            foreach ($teams as $name) {
+                array_push($teamsName, $name->getTeam());
+                array_push($teamsURL, $name ->getGitlabURL());
+            }
 
        
-       // dd($notificationss);
-        //$urlServer = array_unique($uniqueServer);
-        //dd($urlServer,$teamsName);
-        return $this->render('admin/dashboard.html.twig', [
-            'teams' => $teams,   
+            // dd($notificationss);
+            //$urlServer = array_unique($uniqueServer);
+            //dd($urlServer,$teamsName);
+            return $this->render('admin/dashboard.html.twig', [
+            'teams' => $teams,
             'names' => json_encode($teamsName),
             'urls' => json_encode($teamsURL),
-            'locations' => json_encode($locations), 
+            'locations' => json_encode($locations),
         ]);
-        
+       
     }
     /**
      * @Route("/getNotif", name="getNotif")
@@ -149,32 +169,35 @@ class DashboardController extends AbstractController
         $releasesNumber = 0 ;
         $mergeReqNumber = 0 ; 
         foreach ($teams as $name){
-            array_push($teamsName,$name->getTeam());
+            if ($name -> getGitType() == 'Gitlab') {
+                array_push($teamsName, $name->getTeam());
+            }
         }
         foreach ($teams as $team) {
-            foreach ($locations as $loc) {
-                 if ($team -> getMap() == $loc) {
+            if ($team -> getGitType() == 'Gitlab') {
+                foreach ($locations as $loc) {
+                    if ($team -> getMap() == $loc) {
                         $projects= $callapiservice -> GetGitLabProjects($team-> getGitlabURL(), $team -> getToken());
                         foreach ($projects as $proj) {
                             $commitNumber = $commitNumber + count($callapiservice -> GetProjectCommits($proj['id'], $team -> getGitlabURL(), $team -> getToken()));
                             $releasesNumber = $releasesNumber + count($callapiservice -> GetProjectReleases($proj['id'], $team -> getGitlabURL(), $team -> getToken()));
                             $mergeReqNumber = $mergeReqNumber + count($callapiservice -> GetProjectMergeReq($proj['id'], $team -> getGitlabURL(), $team -> getToken()));
-                        }                   
-                         $loc->commits = $commitNumber;
-                         $loc->releases = $releasesNumber;
-                         $loc->merges = $mergeReqNumber;
-                         $releasesNumber = 0 ;
-                         $commitNumber = 0 ;
-                         $mergeReqNumber =0;
-
+                        }
+                        $loc->commits = $commitNumber;
+                        $loc->releases = $releasesNumber;
+                        $loc->merges = $mergeReqNumber;
+                        $releasesNumber = 0 ;
+                        $commitNumber = 0 ;
+                        $mergeReqNumber =0;
+                    }
                 }
             }
-        
-        } 
+            }
        
-        return $this -> json([
-            'locations' => json_encode($locations), 
+            return $this -> json([
+            'locations' => json_encode($locations),
         ], 200);
+        
     }
 
      
@@ -213,26 +236,29 @@ class DashboardController extends AbstractController
     /**
      * @Route("/pushMercureNotif", name="pushMercureNotif")
      */
-    public function pushMercureNotif(CallApiService $callapiservice): Response
+    public function pushMercureNotif(CallApiService $callapiservice, ServiceGitHub $serviceGitHub): Response
     {
         $notif = new MercureNotifications();
         $em = $this->getDoctrine()->getManager();
         $teams = $em->getRepository('App\Entity\ServerEndpoint')->findAll();
 
         foreach ($teams as $team){
-            $projects = $callapiservice -> GetGitLabProjects($team-> getGitlabURL(), $team -> getToken());
-            foreach ($projects as $project){
-                $notif = new MercureNotifications();
-                $notif -> setIdProject($project['id']);
-                $notif -> setNbCommits(count($callapiservice -> GetProjectCommits($project['id'], $team -> getGitlabURL(), $team -> getToken())));
-                $notif -> setNbMerges(count ($callapiservice -> GetProjectMergeReq($project['id'], $team -> getGitlabURL(), $team -> getToken())));
-                $notif -> setNbReleases(count($callapiservice -> GetProjectReleases($project['id'], $team -> getGitlabURL(), $team -> getToken())));
-                $notif -> setNbJobs(count($callapiservice -> GetPipelineJobs($project['id'], $team -> getGitlabURL(), $team -> getToken())));
-                $notif -> setNbPipes(count($callapiservice -> GetProjectPipelines($project['id'], $team -> getGitlabURL(), $team -> getToken())));
-                $notif -> setNbIssues(count($callapiservice -> GetProjectIssues($project['id'], $team -> getGitlabURL(), $team -> getToken())));
-                $em->persist($notif);
-                $em->flush();
+            if ($team -> getType() == 'Gitlab') {
+                $projects = $callapiservice -> GetGitLabProjects($team-> getGitlabURL(), $team -> getToken());
+                foreach ($projects as $project) {
+                    $notif = new MercureNotifications();
+                    $notif -> setIdProject($project['id']);
+                    $notif -> setNbCommits(count($callapiservice -> GetProjectCommits($project['id'], $team -> getGitlabURL(), $team -> getToken())));
+                    $notif -> setNbMerges(count($callapiservice -> GetProjectMergeReq($project['id'], $team -> getGitlabURL(), $team -> getToken())));
+                    $notif -> setNbReleases(count($callapiservice -> GetProjectReleases($project['id'], $team -> getGitlabURL(), $team -> getToken())));
+                    $notif -> setNbJobs(count($callapiservice -> GetPipelineJobs($project['id'], $team -> getGitlabURL(), $team -> getToken())));
+                    $notif -> setNbPipes(count($callapiservice -> GetProjectPipelines($project['id'], $team -> getGitlabURL(), $team -> getToken())));
+                    $notif -> setNbIssues(count($callapiservice -> GetProjectIssues($project['id'], $team -> getGitlabURL(), $team -> getToken())));
+                    $em->persist($notif);
+                    $em->flush();
+                }
             }
+        
         }
         return new Response('publishedToTestELSABEN FEL BASE!');
     }
@@ -241,14 +267,16 @@ class DashboardController extends AbstractController
      * @Route("/test/test", name="testtest")
      */
     public function invokeMercure(HubInterface $hub,CallApiService $callapiservice): Response
-    {   
+    {
         $em = $this->getDoctrine()->getManager();
         $teams = $em->getRepository('App\Entity\ServerEndpoint')->findAll();
         $notifs = $em->getRepository('App\Entity\MercureNotifications')->findAll();
-        foreach($teams as $team){
+        foreach ($teams as $team) {
+            if ($team -> getGitType() == 'Gitlab') {
+
             $projects = $callapiservice -> GetGitLabProjects($team-> getGitlabURL(), $team -> getToken());
-            foreach ($projects as $project){
-                foreach($notifs as $notif){
+            foreach ($projects as $project) {
+                foreach ($notifs as $notif) {
                     $releases = $callapiservice -> GetProjectReleases($project['id'], $team -> getGitlabURL(), $team -> getToken());
                     $nbReleases = count($releases);
 
@@ -259,14 +287,14 @@ class DashboardController extends AbstractController
                     $nbCommits = count($commits);
 
                      
-                  //  $release = $releases[0];
-                    if (($notif -> getIdProject() == $project['id']) && ($notif -> getNbReleases() < $nbReleases)){
-                        // hedha zidou fel affichage yaatik 9adeh men release tzed bedhabt 
+                    //  $release = $releases[0];
+                    if (($notif -> getIdProject() == $project['id']) && ($notif -> getNbReleases() < $nbReleases)) {
+                        // hedha zidou fel affichage yaatik 9adeh men release tzed bedhabt
                         $nbActionToAdd = $nbReleases - $notif -> getNbReleases();
 
                       
 
-                      $update = new Update(
+                        $update = new Update(
                             '/release',
                             json_encode(['action' => 'release',
                             'project' => $project['id'],
@@ -289,22 +317,21 @@ class DashboardController extends AbstractController
                         $notification -> setAction('Release');
 
                         $em-> persist($notification);
-                        $em->flush(); 
+                        $em->flush();
                         
-                     /*   return $this -> json([
-                            'dataRGit' => $nbReleases,
-                            'projectId' => $project['id'],
-                            'idProjBASESDB' => $notif->getIdProject(),
-                            'REALEAEFELBD' => $notif -> getNbReleases()
-                        ]);*/
-                    }
-                    else if (($notif -> getIdProject() == $project['id']) && ($notif -> getNbMerges() < $nbMerges)){
-                        // hedha zidou fel affichage yaatik 9adeh men release tzed bedhabt 
+                    /*   return $this -> json([
+                           'dataRGit' => $nbReleases,
+                           'projectId' => $project['id'],
+                           'idProjBASESDB' => $notif->getIdProject(),
+                           'REALEAEFELBD' => $notif -> getNbReleases()
+                       ]);*/
+                    } elseif (($notif -> getIdProject() == $project['id']) && ($notif -> getNbMerges() < $nbMerges)) {
+                        // hedha zidou fel affichage yaatik 9adeh men release tzed bedhabt
                         $nbActionToAdd = $nbMerges - $notif -> getNbMerges();
 
                       
 
-                      $update = new Update(
+                        $update = new Update(
                             '/mergeReq',
                             json_encode(['action' => 'merge',
                             'project' => $project['id'],
@@ -328,22 +355,21 @@ class DashboardController extends AbstractController
                         $notification -> setAction('MergeReq');
 
                         $em-> persist($notification);
-                        $em->flush(); 
+                        $em->flush();
                         
-                     /*   return $this -> json([
-                            'dataRGit' => $nbReleases,
-                            'projectId' => $project['id'],
-                            'idProjBASESDB' => $notif->getIdProject(),
-                            'REALEAEFELBD' => $notif -> getNbReleases()
-                        ]);*/
-                     }
-                     else if (($notif -> getIdProject() == $project['id']) && ($notif -> getNbCommits() < $nbCommits)){
-                        // hedha zidou fel affichage yaatik 9adeh men release tzed bedhabt 
+                    /*   return $this -> json([
+                           'dataRGit' => $nbReleases,
+                           'projectId' => $project['id'],
+                           'idProjBASESDB' => $notif->getIdProject(),
+                           'REALEAEFELBD' => $notif -> getNbReleases()
+                       ]);*/
+                    } elseif (($notif -> getIdProject() == $project['id']) && ($notif -> getNbCommits() < $nbCommits)) {
+                        // hedha zidou fel affichage yaatik 9adeh men release tzed bedhabt
                         $nbActionToAdd = $nbCommits - $notif -> getNbCommits();
 
                       
 
-                      $update = new Update(
+                        $update = new Update(
                             '/commit',
                             json_encode(['action' => 'commit',
                             'project' => $project['id'],
@@ -367,19 +393,19 @@ class DashboardController extends AbstractController
                         $notification -> setAction('commit');
 
                         $em-> persist($notification);
-                        $em->flush(); 
+                        $em->flush();
                         
-                     /*   return $this -> json([
-                            'dataRGit' => $nbReleases,
-                            'projectId' => $project['id'],
-                            'idProjBASESDB' => $notif->getIdProject(),
-                            'REALEAEFELBD' => $notif -> getNbReleases()
-                        ]);*/
-                     }
-            }
+                        /*   return $this -> json([
+                               'dataRGit' => $nbReleases,
+                               'projectId' => $project['id'],
+                               'idProjBASESDB' => $notif->getIdProject(),
+                               'REALEAEFELBD' => $notif -> getNbReleases()
+                           ]);*/
+                    }
+                }
             }
         }
-
+    }
         return new Response('publishedToTestACTIONMERCURE!');
     }
 
