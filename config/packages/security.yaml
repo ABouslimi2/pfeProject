@@ -5,10 +5,10 @@ security:
             ldap:
                 service: Symfony\Component\Ldap\Ldap
                 base_dn: 'OU=Regional,DC=ad,DC=linedata,DC=com'
-                search_dn: 'CN=SA_KenLDAP,OU=Service Accounts,OU=Global,DC=ad,DC=linedata,DC=com'
+                search_dn: 'SA_KenLDAP,OU=Service Accounts,OU=Global,DC=ad,DC=linedata,DC=com'
                 search_password: 'LDS@ken01'
                 uid_key: sAMAccountName
-                filter: (sAMAccountName={username})
+                #filter: (sAMAccountName={username})
                 default_roles: ROLE_USER
                 #extra_fields: ['title']
     
@@ -17,15 +17,15 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            pattern: ^/
-            security: true
-            anonymous: true
+            #pattern: ^/
+            #security: true
+            anonymous: ~
             provider: my_ldap
             form_login_ldap:
                 login_path: login
                 check_path: login
                 service: Symfony\Component\Ldap\Ldap
-                dn_string: 'sAMAccountName={username},DC=ad,DC=linedata,DC=com'
+                dn_string: 'LDS\{username}'
                 #query_string: '(sAMAccountName={username})'
                 #search_dn: 'CN=SA_KenLDAP,OU=Service Accounts,OU=Global,DC=ad,DC=linedata,DC=com'
                 #search_password: 'LDS@ken01'

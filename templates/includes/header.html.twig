@@ -211,7 +211,7 @@ console.log(obj);
     $('.na9ouz').click(function() {
             $('.nbNotif').text('');
             nbNotifications = 0 ;
-        return false;
+        //return false;
     });
         var lat = obj.lat;
 		var long = obj.long;
@@ -222,7 +222,14 @@ console.log(obj);
 				map: map
 			});
 			marker.info = new google.maps.InfoWindow({
-			content: '<p>'+'<b>NEW'+obj.action+' !!!!!!!!!!!!!!!!!     </b>'+'</p>'
+            content: '<div id="content">' + '<div id="siteNotice">' + '</div>'
+             + '<h3 id="firstHeading" class="firstHeading">NEW  '+obj.action + 
+             '</h3>' + '<div id="bodyContent">' + '<p><b style="color:red;">' 
+             +obj.teamName +'</b>: <b>'+ obj.server +'</b>'
+              +'</br><b> Number of  '+obj.action+' is updated to :' + obj.nbAction+' In project : '+ obj.project+'</b></br>'
+              
+			
+            //content: '<p>'+'<b>NEW  '+obj.action+'</b>'+'</p>'
 			});
 			google.maps.event.addListener(marker, 'click', function() {
 				marker.info.open(map, marker);
@@ -237,15 +244,15 @@ console.log(obj);
                 return new Promise((resolve, reject) => {
                     setTimeout(() => {
                         resolve(new google.maps.event.trigger( marker, 'click' ));
-                    }, 5000);
+                    }, 25000);
                 })
             }
 
         waiting().then(() => {
 
            google.maps.event.clearListeners(marker, 'click');
-           // initMap();
-            marker.info = new google.maps.InfoWindow({
+            initMap();
+         /*   marker.info = new google.maps.InfoWindow({
 			content: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
 			});
             google.maps.event.addListener(marker, 'mouseover', function() {
@@ -253,7 +260,7 @@ console.log(obj);
 			});
             google.maps.event.addListener(marker, 'mouseout', function() {
 				marker.info.close(map, marker);
-			});
+			});*/
      });
             
         

@@ -27,6 +27,7 @@ class MapLDS
     public $releases;
     public $merges;
     public $teamName;
+    public $urlServer;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */

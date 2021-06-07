@@ -59,6 +59,7 @@ class DashboardController extends AbstractController
                         $loc->releases = $releasesNumber;
                         $loc->merges = $mergesNumber;
                         $loc->teamName = $team -> getTeam();
+                        $loc->urlServer= $team -> getGitlabURL();
                         $mergesNumber=0;
 
                         $releasesNumber = 0 ;
@@ -80,6 +81,7 @@ class DashboardController extends AbstractController
                         $loc->releases = $releasesNumber;
                         // $loc->merges = $mergesNumber;
                         $loc->teamName = $team -> getTeam();
+                        $loc->urlServer= $team -> getGitlabURL();
                         // $mergesNumber=0;
 
                         $releasesNumber = 0 ;
@@ -238,12 +240,19 @@ class DashboardController extends AbstractController
      */
     public function pushMercureNotif(CallApiService $callapiservice, ServiceGitHub $serviceGitHub): Response
     {
+        $projects = [];
         $notif = new MercureNotifications();
         $em = $this->getDoctrine()->getManager();
         $teams = $em->getRepository('App\Entity\ServerEndpoint')->findAll();
 
+        //var_dump($teams);die();
+        $notificationToDelete = $em->getRepository('App\Entity\MercureNotifications')->findAll();
+        foreach ($notificationToDelete as $nn){
+            $em -> remove($nn);
+            $em -> flush();
+        }
         foreach ($teams as $team){
-            if ($team -> getType() == 'Gitlab') {
+            if ($team -> getGitType() == 'Gitlab') {
                 $projects = $callapiservice -> GetGitLabProjects($team-> getGitlabURL(), $team -> getToken());
                 foreach ($projects as $project) {
                     $notif = new MercureNotifications();
@@ -254,6 +263,23 @@ class DashboardController extends AbstractController
                     $notif -> setNbJobs(count($callapiservice -> GetPipelineJobs($project['id'], $team -> getGitlabURL(), $team -> getToken())));
                     $notif -> setNbPipes(count($callapiservice -> GetProjectPipelines($project['id'], $team -> getGitlabURL(), $team -> getToken())));
                     $notif -> setNbIssues(count($callapiservice -> GetProjectIssues($project['id'], $team -> getGitlabURL(), $team -> getToken())));
+                    $em->persist($notif);
+                    $em->flush();
+                }
+            }
+            else {
+                $projects= $serviceGitHub -> GetGitHubRepos($team-> getGitlabURL(), $team -> getToken());
+                foreach ($projects as $project) {
+                    $notif = new MercureNotifications();
+                    $notif -> setName($project['name']);
+                    $notif -> setIdProject(999999);
+
+                    $notif -> setNbCommits(count($serviceGitHub-> GetGitHubCommits($project['owner']['login'], $project['name'], $team -> getGitlabURL(), $team -> getToken())));
+                    //$notif -> setNbMerges(count($callapiservice -> GetProjectMergeReq($project['id'], $team -> getGitlabURL(), $team -> getToken())));
+                    $notif -> setNbReleases(count($serviceGitHub -> GetGitHubReleases($project['owner']['login'], $project['name'], $team -> getGitlabURL(), $team -> getToken())));
+                   // $notif -> setNbJobs(count($callapiservice -> GetPipelineJobs($project['id'], $team -> getGitlabURL(), $team -> getToken())));
+                   // $notif -> setNbPipes(count($callapiservice -> GetProjectPipelines($project['id'], $team -> getGitlabURL(), $team -> getToken())));
+                   // $notif -> setNbIssues(count($callapiservice -> GetProjectIssues($project['id'], $team -> getGitlabURL(), $team -> getToken())));
                     $em->persist($notif);
                     $em->flush();
                 }
@@ -299,8 +325,9 @@ class DashboardController extends AbstractController
                             json_encode(['action' => 'release',
                             'project' => $project['id'],
                             // 'newReleaseName' => $release['name'],
-                             'nbRelease' => $nbReleases,
+                             'nbAction' => "Releases Number: "+ $nbReleases,
                             'server' => $team -> getGitlabURL(),
+                            'teamName' => $team -> getTeam(),
                             'lat'=> $team -> getMap()-> getLattitude(),
                             'long'=> $team -> getMap()-> getLongitude(),
 
@@ -336,9 +363,9 @@ class DashboardController extends AbstractController
                             json_encode(['action' => 'merge',
                             'project' => $project['id'],
                             // 'newReleaseName' => $release['name'],
-                             'nbMerge' => $nbMerges,
+                             'nbAction' => "Merge Requests Number: "+$nbMerges,
                             'server' => $team -> getGitlabURL(),
-                        
+                            'teamName' => $team -> getTeam(),
                             'lat'=> $team -> getMap()-> getLattitude(),
                             'long'=> $team -> getMap()-> getLongitude(),
 
@@ -374,9 +401,9 @@ class DashboardController extends AbstractController
                             json_encode(['action' => 'commit',
                             'project' => $project['id'],
                             // 'newReleaseName' => $release['name'],
-                             'nbCommit' => $nbCommits,
+                             'nbAction' => "Commits Number: "+$nbCommits,
                             'server' => $team -> getGitlabURL(),
-                        
+                            'teamName' => $team -> getTeam(),
                             'lat'=> $team -> getMap()-> getLattitude(),
                             'long'=> $team -> getMap()-> getLongitude(),
 

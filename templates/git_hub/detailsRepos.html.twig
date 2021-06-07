@@ -37,6 +37,8 @@
                                         </li>
                                         <li class="nav-item"><a class="nav-link " data-toggle="tab" href="#message">{{issuesNB}} Issues</a>
                                         </li>
+                                        <!--li class="nav-item"><a class="nav-link " data-toggle="tab" href="#release">{{releasesNB}} Releases</a>
+                                        </li -->
                                     </ul>
                                     
                                     <div class="tab-content">
@@ -143,7 +145,39 @@
                                                                  
                                             </div>
                                         </div>
-                                    <!-- end branches -->
+                                    <!-- end branches 
+<div class="tab-pane fade" id="release">
+                                            <div class="p-t-15">
+                                          <div class="col-lg-12">
+                                                <div class="card">
+                                                    {% if releasesNB == 0 %}
+                                                      <h3> The project has no releases ! </h3>
+                                                     {% else %}
+                                                
+
+                                                    <div class="card-body">
+                                                     {% for rel in releases %}
+                            <table>
+                            <tr>
+                            <td><h4 class="card-title"><img src="{{asset('assets/images/rel.png') }}"/>{{rel.tag_name}}</h4> </td>
+                            
+                            </tr>
+                            </table>
+
+                                <h5>Assets <span class="badge badge-pill badge-danger">{#{ rel.assets.count }#}</span></h5></br>
+                                 
+             
+                                 {% endfor %}
+                                                    </div>
+
+                                                
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                                                 
+                                            </div>
+                                        </div>
+                                    < end branches -->
                                         <div class="tab-pane fade" id="message">
                                             <div class="p-t-15">
 											<div class="card">

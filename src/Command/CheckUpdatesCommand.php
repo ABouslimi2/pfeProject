@@ -91,11 +91,11 @@ class CheckUpdatesCommand extends Command
                             json_encode(['action' => 'release',
                             'project' => $project['id'],
                             // 'newReleaseName' => $release['name'],
-                             'nbRelease' => $nbReleases,
+                             'nbAction' =>  $nbReleases,
                             'server' => $team -> getGitlabURL(),
                             'lat'=> $team -> getMap()-> getLattitude(),
                             'long'=> $team -> getMap()-> getLongitude(),
-
+                            'teamName' => $team -> getTeam(),
                             ])
                         );
                    
@@ -129,12 +129,12 @@ class CheckUpdatesCommand extends Command
                             json_encode(['action' => 'merge',
                             'project' => $project['id'],
                             // 'newReleaseName' => $release['name'],
-                             'nbMerge' => $nbMerges,
+                             'nbAction' =>  $nbMerges,
                             'server' => $team -> getGitlabURL(),
                         
                             'lat'=> $team -> getMap()-> getLattitude(),
                             'long'=> $team -> getMap()-> getLongitude(),
-
+                            'teamName' => $team -> getTeam(),
                             ])
                         );
                    
@@ -168,12 +168,12 @@ class CheckUpdatesCommand extends Command
                             json_encode(['action' => 'commit',
                             'project' => $project['id'],
                             // 'newReleaseName' => $release['name'],
-                             'nbCommit' => $nbCommits,
+                             'nbAction' => $nbCommits,
                             'server' => $team -> getGitlabURL(),
                         
                             'lat'=> $team -> getMap()-> getLattitude(),
                             'long'=> $team -> getMap()-> getLongitude(),
-
+                            'teamName' => $team -> getTeam(),
                             ])
                         );
                    

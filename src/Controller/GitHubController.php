@@ -37,6 +37,8 @@ class GitHubController extends AbstractController
         $brancheNB= count($branches);
         $issues= $serviceGitHub -> GetGitHubIssues($owner,$name,$url,$token);
         $issuesNB=count($issues);
+        $releases= $serviceGitHub -> GetGitHubReleases($owner,$name,$url,$token);
+        $releasesNB= count($releases);
 
         return $this->render('git_hub/detailsRepos.html.twig', [
             'data' => $serviceGitHub -> GetGitHubOneRepo($owner,$name,$url,$token),
@@ -49,6 +51,8 @@ class GitHubController extends AbstractController
             'brancheNB' => $brancheNB,
             'issues' => $issues,
             'issuesNB' => $issuesNB,
+            'releases' => $releases,
+            'releasesNB' => $releasesNB
         ]);
     }
 
