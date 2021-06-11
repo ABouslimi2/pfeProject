@@ -36,7 +36,7 @@ services:
     Symfony\Component\Ldap\Adapter\ExtLdap\Adapter:
         arguments:
             -   host: ln1ads01.ad.linedata.com
-                port: 636
+                #port: 636
                 #encryption: tls
                 options:
                     protocol_version: 3

@@ -4,13 +4,13 @@ security:
         my_ldap:
             ldap:
                 service: Symfony\Component\Ldap\Ldap
-                base_dn: 'OU=Regional,DC=ad,DC=linedata,DC=com'
-                search_dn: 'SA_KenLDAP,OU=Service Accounts,OU=Global,DC=ad,DC=linedata,DC=com'
+                base_dn: 'DC=ad,DC=linedata,DC=com'
+                search_dn: 'CN=SA_KenLDAP,OU=Service Accounts,OU=Global,DC=ad,DC=linedata,DC=com'
                 search_password: 'LDS@ken01'
-                uid_key: sAMAccountName
+                #uid_key: sAMAccountName
                 #filter: (sAMAccountName={username})
                 default_roles: ROLE_USER
-                #extra_fields: ['title']
+                extra_fields: ['title','cn']
     
     firewalls:
         dev:
@@ -25,14 +25,17 @@ security:
                 login_path: login
                 check_path: login
                 service: Symfony\Component\Ldap\Ldap
-                dn_string: 'LDS\{username}'
-                #query_string: '(sAMAccountName={username})'
-                #search_dn: 'CN=SA_KenLDAP,OU=Service Accounts,OU=Global,DC=ad,DC=linedata,DC=com'
-                #search_password: 'LDS@ken01'
+                dn_string: 'OU=Regional,DC=ad,DC=linedata,DC=com'
+                query_string: '(sAMAccountName={username})'
+                search_dn: 'CN=SA_KenLDAP,OU=Service Accounts,OU=Global,DC=ad,DC=linedata,DC=com'
+                search_password: 'LDS@ken01'
                 default_target_path: AdminDashboard
+            logout: 
+                path: logout
+                target: login
     access_control:
-        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         #- { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/AdminDashboard, roles: ROLE_USER }        
+        - { path: ^/, roles: ROLE_USER }        
 
  

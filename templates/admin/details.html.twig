@@ -114,23 +114,22 @@
                                                 <div class="modal-body">
                                                   
                                                 <div class="form-group row">
-                                                <div class="form-group col-md-4">
-												<label>Branch Name </label>
-												
+                                               
+												<label class="col-sm-4 col-form-label">Branch Name </label>
+							<div class="col-sm-8">					
 					<input type="text" class="form-control"  placeholder="Enter the branch name"  name="newB" id="myNewB" >
-												</div>
-                    <div id="requiredNameB" style="display: none;"><p style="color:red;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						</div>						
+                    <div id="requiredNameB" style="display: none;"><p style="color:red;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					Field branch name is required !</b></p></div>
-					<div id="BranchNameExist" style="display: none;"><p style="color:red;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<div id="BranchNameExist" style="display: none;"><p style="color:red;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					branch name already exists !</b></p></div>
                                                 </div>
-                                                <input type="hidden" id="teamIdAjax" value="{{team.id}}"> 
-    <input type="hidden" id="projectIdAjax" value="{{data.id}}">
 
                 									<div class="form-row">
-                    									<div class="form-group col-md-4">
-															<label>Create From : </label>
-                                        				<select name="inputVariableB" class="form-control">
+                    									
+															<label  class="col-sm-4 col-form-label">Create From : </label>
+                                        				<div class="col-sm-8">
+                                                        <select name="inputVariableB" class="form-control">
                                                         
 
                                                         {% for bb in branches %}
@@ -138,8 +137,8 @@
 
                                                             {% endfor %}
                                                         </select>
-                                   
-														 </div>                                    
+                                   </div>
+														                                   
 												  </div>
             									
 
@@ -809,8 +808,8 @@ var ctx = document.getElementById("doughutChart");
 <script type="text/javascript"> 
         
 $(document).ready(function () {
- $('.addBtn').on('click', function(e) {
-        e.preventDefault();
+ $('.addBtn').on('click', function() {
+       // e.preventDefault();
   var myNewB = document.getElementById("myNewB").value;
   var data = $('#formAdd').serialize();
   var url = $(this).data('href');

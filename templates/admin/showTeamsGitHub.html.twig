@@ -58,8 +58,8 @@
 										<div class="basic-form">
 
 											<div class="form-group row">
-												<label class="col-sm-2 col-form-label">Team Name</label>
-												<div class="col-sm-10">
+												<label class="col-sm-4 col-form-label">Team Name</label>
+												<div class="col-sm-8">
 													<input type="text" class="form-control"  placeholder="Enter your team name"  name="team" id="myName">
 												</div>
 					<div id="requiredTeam" style="display: none;"><p style="color:red;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -68,8 +68,8 @@
 					Team name already exists !</b></p></div>
 											</div>
 											<div class="form-group row">
-												<label class="col-sm-2 col-form-label">Git Server URL</label>
-												<div class="col-sm-10">
+												<label class="col-sm-4 col-form-label">Git Server URL</label>
+												<div class="col-sm-8">
 					<input type="text" class="form-control" placeholder="Enter your git server URL"  name="gitlabURL" id="myUrl">
 												</div>
 												<div id="requiredUrl" style="display: none;"><p style="color:red;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -78,8 +78,8 @@
 					Git URL already exists !</b></p></div>
 											</div>
 											<div class="form-group row">
-												<label class="col-sm-2 col-form-label">Git Token</label>
-												<div class="col-sm-10">
+												<label class="col-sm-4 col-form-label">Git Token</label>
+												<div class="col-sm-8">
 					<input type="text" class="form-control"  placeholder="Enter your git token"  name="token" minlength="40" maxlength="40" id="myToken">
 												</div>
 												
@@ -90,8 +90,8 @@
 
 											</div>
 													<div class="form-group row">
-												<label class="col-sm-2 col-form-label">Git Type</label>
-												<div class="col-sm-10">
+												<label class="col-sm-4 col-form-label">Git Type</label>
+												<div class="col-sm-8">
 												
                                         <select name="gitType" class="form-control">
                                             <option selected="selected" value="Gitlab" >Gitlab</option>
@@ -99,6 +99,19 @@
                                             
                                                     </select>
 												</div>
+												</div>
+												<div class="form-group row">
+										<label class="col-sm-4 col-form-label">Location</label>
+										<div class="col-sm-8">
+
+											<select name="gitLoc" class="form-control">
+											{% for locc in locationss %}
+												<option value="{{locc.id}}">{{ locc.address }}</option>
+											{% endfor %}
+
+											</select>
+										</div>
+									</div>
 
 											<div class="form-group row">
 												<div class="col-sm-10 ">

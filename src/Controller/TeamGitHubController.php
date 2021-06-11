@@ -3,11 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\ServerEndpoint;
+use App\Repository\MapLDSRepository;
 use App\Repository\ServerEndpointRepository;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 
 class TeamGitHubController extends AbstractController
 {
@@ -20,30 +21,32 @@ class TeamGitHubController extends AbstractController
             $s2 = $request->get('gitlabURL');
             $s3 = $request->get('token');
             $s4 = $request -> get('gitType');
+
+           $s5 = $request ->get('gitLoc');
+            
+            $em = $this->getDoctrine()->getManager();
+            $local = $em -> getRepository('App\Entity\MapLDS')->find($s5);
             $team -> setTeam($s1);
             $team -> setGitlabURL($s2);
             $team -> setToken($s3);
             $team -> setGitType($s4);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($team);
-            $em->flush();
-           $teams =  $serverRep -> findAll();
-           
+            $team -> setMap($local);
+            $emm = $this->getDoctrine()->getManager();
+                     // var_dump($s5,$local);exit();
+         
+            $emm->persist($team);
+            $emm->flush();
+           // $teams =  $serverRep -> findAll();
             return $this -> json([
-                'teams' => $teams,
-            ], 200);  
+               // 'teams' => $teams,
+            ], 200);   
     
         }
-                $teams =  $serverRep -> findAll();
-               
-            return $this -> json([
-                'teams' => $teams,
-            
-            ], 200);
+             
      
     }
    
-    public function ShowTeams(ServerEndpointRepository $serverRep,Request $request):Response
+    public function ShowTeams(ServerEndpointRepository $serverRep,Request $request, MapLDSRepository $mapRep):Response
     {
         $teamsName = [];
         $teamsURL = [];
@@ -54,10 +57,14 @@ class TeamGitHubController extends AbstractController
             array_push($teamsURL,$name ->getGitlabURL());
         }
         $teams = $serverRep -> findTeamByTypeGitHub();
+        $locations =  $mapRep -> findAll();
+
         return $this->render("admin/showTeamsGitHub.html.twig", [
             'teams' => $teams,   
             'names' => json_encode($teamsName), 
             'urls' => json_encode($teamsURL), 
+            'locationss' => $locations,
+
         ]);
     }
 

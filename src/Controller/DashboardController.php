@@ -104,6 +104,7 @@ class DashboardController extends AbstractController
             'names' => json_encode($teamsName),
             'urls' => json_encode($teamsURL),
             'locations' => json_encode($locations),
+            'locationss' => $locations,
         ]);
        
     }
@@ -213,25 +214,27 @@ class DashboardController extends AbstractController
             $s2 = $request->get('gitlabURL');
             $s3 = $request->get('token');
             $s4 = $request -> get('gitType');
+            $s5 = $request ->get('gitLoc');
+            
+            $em = $this->getDoctrine()->getManager();
+            $local = $em -> getRepository('App\Entity\MapLDS')->find($s5);
             $team -> setTeam($s1);
             $team -> setGitlabURL($s2);
             $team -> setToken($s3);
             $team -> setGitType($s4);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($team);
-            $em->flush();
-            $teams =  $serverRep -> findAll();
+            $team -> setMap($local);
+            $emm = $this->getDoctrine()->getManager();
+                     // var_dump($s5,$local);exit();
+         
+            $emm->persist($team);
+            $emm->flush();
+           // $teams =  $serverRep -> findAll();
             return $this -> json([
-                'teams' => $teams,
+               // 'teams' => $teams,
             ], 200);  
     
         }
-                $teams =  $serverRep -> findAll();
-               
-            return $this -> json([
-                'teams' => $teams,
-            ], 200);
-     
+                
     }
 
     //Mercure Hub

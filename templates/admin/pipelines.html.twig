@@ -284,11 +284,29 @@ $(document).ready(function () {
 					$(".tab-content").load(" .tab-content");
 					$('#basicModal').modal('toggle');
 					$('.modal-backdrop.fade.show').hide();			
-				toastr.success('Job played succsesfully', 'PLAYED', {timeOut: 5000})
+				//toastr.success('Job played succsesfully', 'PLAYED', {timeOut: 5000})
 				}
 });
 	});
 });
 });		
+</script>
+<script>
+	setInterval("my_function();",15000); 
+	function my_function(){
+	//var x = document.getElementById("teamIdAjax").value;
+	//var y = document.getElementById("projectIdAjax").value;
+	//console.log(x);
+	$.ajax({ 
+    type: 'get',
+    url: "{{ path('getNotif') }}",
+	//data: {x , y},
+    success: function(data, response){
+		$(".tab-content").load(" .tab-content");
+
+	}
+}); 
+}
+		
 </script>		
 {% endblock %}
