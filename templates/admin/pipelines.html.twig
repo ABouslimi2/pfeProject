@@ -173,8 +173,9 @@
 			
 								
 	{% elseif  job.name == 'Deploy_Preprod' %}
-		<a href="{{ path('play_job', { 'id': data.id, 'idTeam': team.id  ,'idjob' : job.id }) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="Play" style="background-color: white;border-color:red;text-color:black;" type="button" class="btn"><i class="fa fa-play" aria-hidden="true"></i></a>
-										
+		<!--<a href="{#{ path('play_job', { 'id': data.id, 'idTeam': team.id  ,'idjob' : job.id }) }#}" data-toggle="tooltip" data-placement="top" title="" data-original-title="Play" style="background-color: white;border-color:red;text-color:black;" type="button" class="btn"><i class="fa fa-play" aria-hidden="true"></i></a>-->
+		<button  data-href="{{ path('play_job', { 'id':data.id, 'idTeam': team.id, 'idjob':job.id}) }}" data-toggle="modal" data-target=".bd-example-modal-sm" style="background-color: white;border-color:red;text-color:black;" type="button" class="btn btnBtn"><i class="fa fa-play" aria-hidden="true"></i></button>
+								
 {% endif %}
 																
 																</div></div>

@@ -236,7 +236,11 @@ class DashboardController extends AbstractController
         }
                 
     }
+    function cmp($a, $b) {
 
+   
+       return strcmp($a->getGitType(), $b->getGitType());
+       }
     //Mercure Hub
     /**
      * @Route("/pushMercureNotif", name="pushMercureNotif")
@@ -247,6 +251,7 @@ class DashboardController extends AbstractController
         $notif = new MercureNotifications();
         $em = $this->getDoctrine()->getManager();
         $teams = $em->getRepository('App\Entity\ServerEndpoint')->findAll();
+        usort($teams, array("App\Controller\DashboardController", "cmp"));
 
         //var_dump($teams);die();
         $notificationToDelete = $em->getRepository('App\Entity\MercureNotifications')->findAll();
@@ -255,7 +260,28 @@ class DashboardController extends AbstractController
             $em -> flush();
         }
         foreach ($teams as $team){
-            if ($team -> getGitType() == 'Gitlab') {
+            
+             if ($team -> getGitType() == 'Github') {
+                $projects= $serviceGitHub -> GetGitHubRepos($team-> getGitlabURL(), $team -> getToken());
+                foreach ($projects as $project) {
+                    $notif = new MercureNotifications();
+                    $notif -> setName($project['name']);
+                    $notif -> setIdProject(0);
+                    $notif -> setNbMerges(0);
+                    $notif -> setNbJobs(0);
+                    $notif -> setNbIssues(0);
+                    $notif -> setNbPipes(0);
+                    $notif -> setNbCommits(count($serviceGitHub-> GetGitHubCommits($project['owner']['login'], $project['name'], $team -> getGitlabURL(), $team -> getToken())));
+                    //$notif -> setNbMerges(count($callapiservice -> GetProjectMergeReq($project['id'], $team -> getGitlabURL(), $team -> getToken())));
+                    $notif -> setNbReleases(count($serviceGitHub -> GetGitHubReleases($project['owner']['login'], $project['name'], $team -> getGitlabURL(), $team -> getToken())));
+                   // $notif -> setNbJobs(count($callapiservice -> GetPipelineJobs($project['id'], $team -> getGitlabURL(), $team -> getToken())));
+                   // $notif -> setNbPipes(count($callapiservice -> GetProjectPipelines($project['id'], $team -> getGitlabURL(), $team -> getToken())));
+                   // $notif -> setNbIssues(count($callapiservice -> GetProjectIssues($project['id'], $team -> getGitlabURL(), $team -> getToken())));
+                    $em->persist($notif);
+                    $em->flush();
+                }
+            }
+          else  if ($team -> getGitType() == 'Gitlab') {
                 $projects = $callapiservice -> GetGitLabProjects($team-> getGitlabURL(), $team -> getToken());
                 foreach ($projects as $project) {
                     $notif = new MercureNotifications();
@@ -270,23 +296,6 @@ class DashboardController extends AbstractController
                     $em->flush();
                 }
             }
-            else {
-                $projects= $serviceGitHub -> GetGitHubRepos($team-> getGitlabURL(), $team -> getToken());
-                foreach ($projects as $project) {
-                    $notif = new MercureNotifications();
-                    $notif -> setName($project['name']);
-                    $notif -> setIdProject(999999);
-
-                    $notif -> setNbCommits(count($serviceGitHub-> GetGitHubCommits($project['owner']['login'], $project['name'], $team -> getGitlabURL(), $team -> getToken())));
-                    //$notif -> setNbMerges(count($callapiservice -> GetProjectMergeReq($project['id'], $team -> getGitlabURL(), $team -> getToken())));
-                    $notif -> setNbReleases(count($serviceGitHub -> GetGitHubReleases($project['owner']['login'], $project['name'], $team -> getGitlabURL(), $team -> getToken())));
-                   // $notif -> setNbJobs(count($callapiservice -> GetPipelineJobs($project['id'], $team -> getGitlabURL(), $team -> getToken())));
-                   // $notif -> setNbPipes(count($callapiservice -> GetProjectPipelines($project['id'], $team -> getGitlabURL(), $team -> getToken())));
-                   // $notif -> setNbIssues(count($callapiservice -> GetProjectIssues($project['id'], $team -> getGitlabURL(), $team -> getToken())));
-                    $em->persist($notif);
-                    $em->flush();
-                }
-            }
         
         }
         return new Response('publishedToTestELSABEN FEL BASE!');
@@ -295,10 +304,12 @@ class DashboardController extends AbstractController
    /**
      * @Route("/test/test", name="testtest")
      */
-    public function invokeMercure(HubInterface $hub,CallApiService $callapiservice): Response
+    public function invokeMercure(HubInterface $hub,CallApiService $callapiservice ,  ServiceGitHub $serviceGitHub): Response
     {
         $em = $this->getDoctrine()->getManager();
         $teams = $em->getRepository('App\Entity\ServerEndpoint')->findAll();
+        //usort($teams, array("App\Controller\DashboardController", "cmp"));
+
         $notifs = $em->getRepository('App\Entity\MercureNotifications')->findAll();
         foreach ($teams as $team) {
             if ($team -> getGitType() == 'Gitlab') {
@@ -328,7 +339,9 @@ class DashboardController extends AbstractController
                             json_encode(['action' => 'release',
                             'project' => $project['id'],
                             // 'newReleaseName' => $release['name'],
-                             'nbAction' => "Releases Number: "+ $nbReleases,
+                             'nbAction' =>  $nbReleases,
+                             'idTeam' =>$team -> getId(),
+                             'gitType' => 'Gitlab',
                             'server' => $team -> getGitlabURL(),
                             'teamName' => $team -> getTeam(),
                             'lat'=> $team -> getMap()-> getLattitude(),
@@ -340,7 +353,10 @@ class DashboardController extends AbstractController
                        
                         $hub->publish($update);
                         $notif -> setNbReleases($nbReleases);
+                        
                         $notification = new Notification();
+                        $notification -> setIdProj($project['id']);
+                        $notification -> setIdTeam($team -> getId());
                         $notification -> setDateNotif(new DateTime('NOW'));
                         $notification -> setContenu('New release in project with id : '
                         .$project['id'].' in team  : '.$team -> getGitlabURL());
@@ -366,8 +382,10 @@ class DashboardController extends AbstractController
                             json_encode(['action' => 'merge',
                             'project' => $project['id'],
                             // 'newReleaseName' => $release['name'],
-                             'nbAction' => "Merge Requests Number: "+$nbMerges,
+                             'nbAction' => $nbMerges,
                             'server' => $team -> getGitlabURL(),
+                            'idTeam' =>$team -> getId(),
+                            'gitType' => 'Gitlab',
                             'teamName' => $team -> getTeam(),
                             'lat'=> $team -> getMap()-> getLattitude(),
                             'long'=> $team -> getMap()-> getLongitude(),
@@ -379,6 +397,8 @@ class DashboardController extends AbstractController
                         $hub->publish($update);
                         $notif -> setNbMerges($nbMerges);
                         $notification = new Notification();
+                        $notification -> setIdProj($project['id']);
+                        $notification -> setIdTeam($team -> getId());
                         $notification -> setDateNotif(new DateTime('NOW'));
                         $notification -> setContenu('New merge in project with id : '
                         .$project['id'].' in team  : '.$team -> getGitlabURL());
@@ -404,9 +424,11 @@ class DashboardController extends AbstractController
                             json_encode(['action' => 'commit',
                             'project' => $project['id'],
                             // 'newReleaseName' => $release['name'],
-                             'nbAction' => "Commits Number: "+$nbCommits,
+                             'nbAction' =>$nbCommits,
                             'server' => $team -> getGitlabURL(),
                             'teamName' => $team -> getTeam(),
+                            'idTeam' =>$team -> getId(),
+                            'gitType' => 'Gitlab',
                             'lat'=> $team -> getMap()-> getLattitude(),
                             'long'=> $team -> getMap()-> getLongitude(),
 
@@ -417,6 +439,8 @@ class DashboardController extends AbstractController
                         $hub->publish($update);
                         $notif -> setNbCommits($nbCommits);
                         $notification = new Notification();
+                        $notification -> setIdProj($project['id']);
+                        $notification -> setIdTeam($team -> getId());
                         $notification -> setDateNotif(new DateTime('NOW'));
                         $notification -> setContenu('New commit in project with id : '
                         .$project['id'].' in team  : '.$team -> getGitlabURL());
@@ -433,6 +457,101 @@ class DashboardController extends AbstractController
                            ]);*/
                     }
                 }
+            }
+        }
+       else if ($team -> getGitType() == 'Github'){
+            $projects= $serviceGitHub -> GetGitHubRepos($team-> getGitlabURL(), $team -> getToken());
+            foreach ($projects as $project) {
+                foreach ($notifs as $notif) {
+                    $releases =$serviceGitHub-> GetGitHubReleases($project['owner']['login'], $project['name'], $team -> getGitlabURL(), $team -> getToken());
+                    $nbReleases = count($releases);
+
+                    $commits = $serviceGitHub-> GetGitHubCommits($project['owner']['login'], $project['name'], $team -> getGitlabURL(), $team -> getToken());
+                    $nbCommits = count($commits);
+                    if (($notif -> getName() == $project['name']) && ($notif -> getNbReleases() < $nbReleases)) {
+                      
+                        // $nbActionToAdd = $nbReleases - $notif -> getNbReleases();
+
+                      
+
+                        $update = new Update(
+                            '/release',
+                            json_encode(['action' => 'release',
+                            'project' => $project['name'],
+                            'ownerLogin' => $project['owner']['login'],
+                            'gitType' => 'Github',
+                            'nbAction' =>  $nbReleases,
+                             'idTeam' =>$team -> getId(),
+                            'server' => $team -> getGitlabURL(),
+                            'teamName' => $team -> getTeam(),
+                            'lat'=> $team -> getMap()-> getLattitude(),
+                            'long'=> $team -> getMap()-> getLongitude(),
+                            ])
+                        );
+                   
+                       
+                        $hub->publish($update);
+                        $notif -> setNbReleases($nbReleases);
+                        $notification = new Notification();
+                        $notification -> setIdProj(0);
+                        $notification -> setOwnerProj($project['owner']['login']);
+                        $notification -> setNameProj($project['name']);
+                        $notification -> setIdTeam($team -> getId());
+                        $notification -> setDateNotif(new DateTime('NOW'));
+                        $notification -> setContenu('New release in project with name : '
+                        .$project['name'].' in team  : '.$team -> getGitlabURL());
+                        $notification -> setAction('Release');
+
+                        $em-> persist($notification);
+                        $em->flush();
+                        
+                  
+                    }
+                    else if (($notif -> getName() == $project['name']) && ($notif -> getNbCommits() < $nbCommits)) {
+                        // hedha zidou fel affichage yaatik 9adeh men release tzed bedhabt
+                        $nbActionToAdd = $nbCommits - $notif -> getNbCommits();
+
+                      
+
+                        $update = new Update(
+                            '/commit',
+                            json_encode(['action' => 'commit',
+                            'project' => $project['name'],
+                            'ownerLogin' => $project['owner']['login'],
+                            // 'newReleaseName' => $release['name'],
+                             'nbAction' =>$nbCommits,
+                             'idTeam' =>$team -> getId(),
+                             'gitType' => 'Github',
+
+                            'server' => $team -> getGitlabURL(),
+                            'teamName' => $team -> getTeam(),
+                            'lat'=> $team -> getMap()-> getLattitude(),
+                            'long'=> $team -> getMap()-> getLongitude(),
+
+                            ])
+                        );
+                   
+                       
+                        $hub->publish($update);
+                        $notif -> setNbCommits($nbCommits);
+                        $notification = new Notification();
+                        $notification -> setIdProj(0);
+                        $notification -> setOwnerProj($project['owner']['login']);
+                        $notification -> setNameProj($project['name']);
+                        $notification -> setIdTeam($team -> getId());
+                        $notification -> setDateNotif(new DateTime('NOW'));
+                        $notification -> setContenu('New commit in project with name : '
+                        .$project['name'].' in team  : '.$team -> getGitlabURL());
+                        $notification -> setAction('Commit');
+
+                        $em-> persist($notification);
+                        $em->flush();
+                        
+                   
+                    }
+
+                }
+
             }
         }
     }

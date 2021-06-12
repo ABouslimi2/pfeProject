@@ -155,16 +155,31 @@ $.ajax({
         console.log(data);
         console.log(data.notificationss);
       for (let count = 0 ; count < data.notificationss.length ; count++){
-          var d = data.notificationss[count].DateNotif/*,*/;
- 
+          var d = data.notificationss[count].DateNotif;
+           var idProj = data.notificationss[count].idProj;
+            var idTeam = data.notificationss[count].idTeam;
+            var ownerProj = data.notificationss[count].ownerProj;
+            var nameProj = data.notificationss[count].nameProj;
+            //console.log(LinkToProjec);
         var newElement = document.createElement('LI');
-        newElement.innerHTML= '<a href="javascript:void()">'+
+        if (idProj != 0) {
+        newElement.innerHTML= '<a href="https://127.0.0.1:8000/details/'+idProj+'/'+idTeam+'"> '+
                              '<span class="mr-3 avatar-icon bg-success-lighten-2">'+'<i class="icon-present">'+'</i>'+'</span>'+
                              '<div class="notification-content">'+
                              '<h6 class="notification-heading">'+data.notificationss[count].Contenu+'</h6>'+
                              '<span class="notification-text">'+d+'</span>'+
                              '</div>'+
                              '</a>';
+                             }
+            else {
+                        newElement.innerHTML= '<a href="https://127.0.0.1:8000/GitHub/details/'+ownerProj+'/'+nameProj+'/'+idTeam+'"> '+
+                             '<span class="mr-3 avatar-icon bg-success-lighten-2">'+'<i class="icon-present">'+'</i>'+'</span>'+
+                             '<div class="notification-content">'+
+                             '<h6 class="notification-heading">'+data.notificationss[count].Contenu+'</h6>'+
+                             '<span class="notification-text">'+d+'</span>'+
+                             '</div>'+
+                             '</a>';
+            }
         list.appendChild(newElement);
      } }
           
@@ -196,6 +211,7 @@ var datetime = currentdate.getDate() + "-"
 console.log(obj);
        var list = document.getElementById("listNotif");
          var newElement = document.createElement('LI');
+         if (obj.gitType == 'Gitlab') {
         newElement.innerHTML= '<a href="javascript:void()">'+
                              '<span class="mr-3 avatar-icon bg-success-lighten-2">'+'<i class="icon-present">'+'</i>'+'</span>'+
                              '<div class="notification-content">'+
@@ -203,6 +219,17 @@ console.log(obj);
                              '<span class="notification-text">'+datetime+'</span>'+
                              '</div>'+
                              '</a>';
+         }
+         else {
+        newElement.innerHTML= '<a href="javascript:void()">'+
+                             '<span class="mr-3 avatar-icon bg-success-lighten-2">'+'<i class="icon-present">'+'</i>'+'</span>'+
+                             '<div class="notification-content">'+
+                             '<h6 class="notification-heading">'+'New '+obj.action+'  in project : '+obj.project+' in team  : '+obj.server+'</h6>'+
+                             '<span class="notification-text">'+datetime+'</span>'+
+                             '</div>'+
+                             '</a>';
+
+         }
         list.prepend(newElement);
           list.removeChild(list.lastChild);
 
